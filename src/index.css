@@ -1,0 +1,138 @@
+/* ---------- Design tokens ---------- */
+:root {
+  --bg: #f6f3ec;
+  --ink: #1b1a17;
+  --ink-soft: #5d5a52;
+  --line: #e2ddd1;
+  --accent: #ff5a36;
+  /* one typeface for the whole UI: Inter, the font Foldfolio itself is designed with */
+  --font: 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141310;
+    --ink: #f1ede4;
+    --ink-soft: #a9a497;
+    --line: #2f2c26;
+    color-scheme: dark;
+  }
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+/* ---------- Nino Avery-style chrome around the phone ---------- */
+:root {
+  --nino-ink: #050505;
+  --nino-muted: #7d7d7d;
+}
+
+/* Foldfolio's Basic / Glow / Orbit switch: Basic is the only background now. The colour dots stay. */
+[data-ff-switcher] { display: none !important; }
+
+.site-nav {
+  position: fixed; inset: 0 0 auto; z-index: 50;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; padding: 8px;
+  font: 500 16px/1.25 var(--font); letter-spacing: -0.01em;
+  color: #fff; mix-blend-mode: difference;
+}
+.site-nav-time { justify-self: end; font-variant-numeric: tabular-nums; }
+.site-nav a { transition: opacity .2s ease; }
+.site-nav a:hover { opacity: .55; }
+
+.site-footer {
+  position: fixed; inset: auto 0 0; z-index: 50;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 8px;
+  font: 500 11px/1.3 var(--font); letter-spacing: 0.02em; text-transform: uppercase;
+  color: var(--nino-muted);
+}
+.site-footer p { margin: 0; }
+.site-footer a { justify-self: end; transition: color .2s ease; }
+.site-footer a:hover { color: var(--nino-ink); }
+
+@media (max-width: 809.98px) {
+  .site-nav { display: flex; justify-content: space-between; }
+  .site-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; padding: 16px; }
+  .site-footer a { margin-left: auto; }
+}
+
+/* ---------- Lock screen on the closed phone (LockScreen.tsx, after Foldfolio's own cover design) ---------- */
+.lock {
+  position: relative; height: 100%; overflow: hidden; box-sizing: border-box;
+  display: flex; flex-direction: column; align-items: center;
+  background: rgb(240, 242, 241); color: rgb(17, 17, 17); font-family: var(--font);
+}
+.lock-clock {
+  font: 800 132px/0.9 'Sofia Sans Extra Condensed Variable', 'Sofia Sans Extra Condensed', var(--font);
+  letter-spacing: -0.01em; font-variant-numeric: tabular-nums;
+}
+.lock-line { margin: 0; font: 500 13px/1.3 var(--font); }
+.lock-meta { font: 500 11px/1.3 var(--font); letter-spacing: 0.02em; opacity: .62; font-variant-numeric: tabular-nums; }
+.lock-spacer { flex: 1 1 auto; }
+.lock-notices { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+.lock-notice {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px 9px 9px; border-radius: 18px;
+  background: rgba(255, 255, 255, .72); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+.lock-thumb { width: 40px; height: 40px; flex: none; border-radius: 9px; background-size: cover; background-position: center; }
+.lock-notice-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.lock-notice-text > * { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lock-footer { width: 100%; display: flex; align-items: center; justify-content: space-between; }
+.lock-hint { border-radius: 999px; background: rgba(255, 255, 255, .86); }
+
+/* ---------- Precision-grid desk mat behind the phone (DeskmatGrid.tsx, in Foldfolio's backdrop slot) ---------- */
+.deskmat { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.deskmat svg { position: absolute; inset: 0; display: block; }
+
+/* ---------- Loader (drawn over Foldfolio's closed intro curtain, see Loader.tsx) ---------- */
+:root {
+  --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+}
+html[data-load='loading'] { overflow: hidden; }
+.loader { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
+.loader-line { position: fixed; transform-origin: center; will-change: transform; }
+.loader-label {
+  position: fixed;
+  font: 500 11px/1 var(--font); letter-spacing: 0.02em; text-transform: uppercase;
+  color: var(--nino-muted); font-variant-numeric: tabular-nums; white-space: nowrap;
+  animation: loader-in .5s var(--ease-enter) .1s both;
+  transition: opacity .22s ease-out, translate .22s ease-out;
+}
+/* desktop: the seam is vertical, labels sit either side of it */
+.loader-name { translate: calc(-100% - 16px) -50%; }
+.loader-count { translate: 16px -50%; }
+/* phone: the seam is horizontal, labels sit above it at the page edges */
+.loader.is-port .loader-name { left: 16px; translate: 0 calc(-100% - 12px); }
+.loader.is-port .loader-count { right: 16px; translate: 0 calc(-100% - 12px); }
+.loader.is-leaving .loader-label { opacity: 0; translate: var(--out, 0 0); }
+.loader.is-leaving .loader-name { --out: calc(-100% - 16px) calc(-50% - 6px); }
+.loader.is-leaving .loader-count { --out: 16px calc(-50% - 6px); }
+.loader.is-port.is-leaving .loader-name, .loader.is-port.is-leaving .loader-count { --out: 0 calc(-100% - 18px); }
+@keyframes loader-in { from { opacity: 0; } }
+
+/* ---------- Appear effect: the chrome settles once the curtain has parted ---------- */
+html[data-load='loading'] :is(.site-nav, .site-footer) > * { opacity: 0; }
+html[data-load='intro'] :is(.site-nav, .site-footer) > * {
+  animation: chrome-in .8s var(--ease-enter) both;
+  animation-delay: calc(1100ms + var(--d, 0ms));
+}
+html[data-load='intro'] .site-nav > * { --from: 0 -12px; }
+html[data-load='intro'] .site-nav > :nth-child(2) { --d: 70ms; }
+html[data-load='intro'] .site-footer > * { --from: 0 12px; --d: 140ms; }
+html[data-load='intro'] .site-footer > :nth-child(2) { --d: 210ms; }
+/* later visits in the same session (no intro): a short, quiet fade */
+html[data-load='quick'] :is(.site-nav, .site-footer) > * { animation: chrome-fade .4s ease-out both; }
+@keyframes chrome-in { from { opacity: 0; translate: var(--from); filter: blur(4px); } }
+@keyframes chrome-fade { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
