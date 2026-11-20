@@ -53,11 +53,17 @@ const useMedia = (query) =>
     () => false,
   )
 
+// small phones: how far up the colour dots' row sits (the copyright line goes under it: index.css)
+const COMPACT_ROW = 40
+
 // the phone's layout, shared with the iPod so it can keep clear of the phone
 const SETTINGS = {
   // phones: the phone starts below the name block (name, role and copyright), so even unfolded it
   // never covers them
   phone: withDefaults({ layout: { top: 104, bottom: 32, maxScale: 1 }, switcher: { bottom: 24 } }),
+  // small phones: the copyright moves under the colour dots, so the dots (and the cat) sit a
+  // little higher, and the name block is two lines again
+  compact: withDefaults({ layout: { top: 84, bottom: 32, maxScale: 1 }, switcher: { bottom: COMPACT_ROW } }),
   wide: withDefaults({ layout: { top: 32, bottom: 32, maxScale: 0.9 }, switcher: { bottom: 24 } }),
 }
 
@@ -90,7 +96,7 @@ const catObstacles = (settings) => () => {
   }
   return out
 }
-const OBSTACLES = { phone: catObstacles(SETTINGS.phone), wide: catObstacles(SETTINGS.wide) }
+const OBSTACLES = { phone: catObstacles(SETTINGS.phone), compact: catObstacles(SETTINGS.compact), wide: catObstacles(SETTINGS.wide) }
 
 // the cat's home sits on the switch's row, just inside of it (switch: 16px from the corner, ~175 wide)
 const CAT_HOME_X = 16 + 176 + 10
@@ -98,7 +104,7 @@ const CAT_HOME_X = 16 + 176 + 10
 export default function FoldPhoneHero() {
   const phone = useMedia('(max-width: 809.98px)')
   const compact = useMedia('(max-width: 559.98px)') // the device moves its finish switcher to the left here
-  const settings = phone ? SETTINGS.phone : SETTINGS.wide
+  const settings = compact ? SETTINGS.compact : phone ? SETTINGS.phone : SETTINGS.wide
   const catSide = compact ? 'right' : 'left'
   // phones and tablets: no cursor to chase or run from, so no switch; the cat sits in its corner
   // and goes through its moods by itself (tap it and it reacts)
@@ -130,10 +136,11 @@ export default function FoldPhoneHero() {
         cat="lucky"
         scale={compact ? 1 : 1.5} // smaller on small screens, where it shares the row with the colour dots
         toggleCorner={`bottom-${catSide}`}
-        obstacles={phone ? OBSTACLES.phone : OBSTACLES.wide}
+        obstacles={compact ? OBSTACLES.compact : phone ? OBSTACLES.phone : OBSTACLES.wide}
         cursorless={noCursor}
         // without the switch, home is the corner the switch had
-        style={{ position: 'fixed', bottom: compact ? 19 : 11, [catSide]: noCursor ? 24 : CAT_HOME_X, zIndex: 30 }}
+        // (small phones: level with the colour dots' raised row)
+        style={{ position: 'fixed', bottom: compact ? COMPACT_ROW + 1 : 11, [catSide]: noCursor ? 24 : CAT_HOME_X, zIndex: 30 }}
       />
     </>
   )

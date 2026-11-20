@@ -159,9 +159,17 @@ html:not(.site-ready) :is(.neko-home, .neko-toggle) { opacity: 0; }
   .sheet-info { display: none; }
   .sheet-title { left: 20px; top: 24px; }
   .sheet-name { font-size: 22px; }
-  /* phones: the bottom row is full (colour dots, cat, its switch) and the open phone reaches low, so
-     the copyright is the name block's third line; the phone starts below the block (FoldPhoneHero) */
+  /* wider phones (560–640): the bottom row is full (centred colour dots, the cat) and the open phone
+     reaches low, so the copyright is the name block's third line; the phone starts below the block
+     (FoldPhoneHero). Small phones put it under the dots instead, below. */
   .sheet-copy { top: 74px; bottom: auto; left: 20px; right: auto; }
+}
+/* small phones (where the colour dots move to the left): the copyright goes under the dots, pinned
+   to the real bottom of the screen like them (FoldPhoneHero raises the dots' row to make room).
+   In the loader that corner has the big percentage, so it waits for the site. */
+@media (max-width: 559.98px) {
+  .sheet-copy { position: fixed; top: auto; bottom: 14px; left: 28px; right: auto; }
+  .site-loader .sheet-copy { display: none; }
 }
 
 /* ---------- Site loader: the phone as a technical drawing on the mat (SiteLoader.jsx) ---------- */
