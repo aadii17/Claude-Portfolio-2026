@@ -1423,6 +1423,10 @@ export default function FoldPhoneDevice(props) {
                 style={{
                     ...abs,
                     ...insets(b, hinge),
+                    // [Z8] the left (Flip: top) half's screen reaches 1px past the hinge, under the
+                    // other half's edge: the halves meet on a fractional pixel, and the hairline gap
+                    // between them showed as a line down the middle of the open screen
+                    ...(hinge === hingeOfLeaf ? { [hinge === "R" ? "right" : "bottom"]: -1 } : null),
                     borderRadius: inner(corners, b),
                     background: screenColor,
                     overflow: "hidden",
