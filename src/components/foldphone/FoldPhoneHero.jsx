@@ -7,6 +7,7 @@ import Portfolio, { PortfolioNav } from '../portfolio/Portfolio'
 import DeskIPod from '../desk/DeskIPod'
 import NekoCat from '../desk/NekoCat'
 import SiteLoader from '../site/SiteLoader'
+import CallScreen from '../site/CallScreen'
 import FoldPhone, { withDefaults } from './FoldPhone'
 import { deviceFrame } from './FoldPhoneDevice'
 
@@ -20,7 +21,7 @@ import { deviceFrame } from './FoldPhoneDevice'
  *   screenPortrait  Z Flip 8 inner display: Portfolio (flip). 358px wide; 823px visible. Punch-hole at top centre.
  *   cover           Z Fold 8 cover screen (closed): LockScreen, FoldPhone's own lock-screen design. Punch-hole at top centre.
  *   coverPortrait   Z Flip 8 FlexWindow (closed): LockScreen, compact variant.
- *   call            screen shown on the cover after it folds shut again at the end.
+ *   call            screen shown on the cover after it folds shut again at the end: CallScreen (incoming call).
  *   nav             floating nav on top of the open display: PortfolioNav (scrolls the screen to a section).
  *   backdrop        the layer behind the phone: the precision-grid desk mat (DeskmatGrid) with the
  *                   iPod lying on it (DeskIPod, src/components/desk/; wider screens only, not on mobile).
@@ -30,17 +31,6 @@ import { deviceFrame } from './FoldPhoneDevice'
  * around the phone and the iPod, never over them. On touch screens (no cursor) there's no switch:
  * the cat sits in that corner and goes through its moods by itself.
  */
-
-function Call() {
-  return (
-    <div style={{ height: '100%', display: 'grid', placeItems: 'center', color: '#fff', background: '#0b0b0b', fontFamily: 'var(--font)' }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 30, fontWeight: 700 }}>Incoming call</div>
-        <div style={{ fontSize: 14, opacity: 0.7 }}>call screen placeholder</div>
-      </div>
-    </div>
-  )
-}
 
 const useMedia = (query) =>
   useSyncExternalStore(
@@ -122,7 +112,7 @@ export default function FoldPhoneHero() {
         screenPortrait={<Portfolio variant="flip" />}
         cover={<LockScreen size="fold" />}
         coverPortrait={<LockScreen size="flip" />}
-        call={<Call />}
+        call={<CallScreen />}
         nav={<PortfolioNav />}
         backdrop={
           <>

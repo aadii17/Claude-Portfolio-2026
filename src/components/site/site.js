@@ -1,7 +1,8 @@
 // Your details. Edit here.
 export const SITE = {
   name: 'Aadarsh Choudhari',
-  email: 'hello@example.com', // your contact email (shown inside the phone)
+  email: 'aadarshchoudhari18@gmail.com', // your contact email (shown inside the phone)
+  phone: '+919890978788', // on phones, swiping the call screen's 'slide to talk' calls this number
   year: 2026,
   role: 'Product designer · Mumbai', // line under the lock-screen clock
   // lock-screen buttons: Behance bottom-left, Instagram bottom-right. Put your profile URLs here.

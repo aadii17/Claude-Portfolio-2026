@@ -29,7 +29,7 @@ const HERO_NAME = `${SITE.name.split(' ')[0]}`
 const SERVICES = [
   { label: 'Web Design', level: 1 },
   { label: 'UI/UX Design', level: 2 },
-  { label: 'Brand Identity', level: 3 },
+  { label: 'Product Design', level: 3 },
 ]
 const SOCIALS = [
   {
