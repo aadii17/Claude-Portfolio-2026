@@ -28,7 +28,3 @@ npm run build    # production build in dist/
 | `src/components/site/` | Lock screen, desk-mat background, India-time clock, name and links (`site.ts`). |
 
 To show a resume download button on the inner display, add the PDF to `public/` and set `PROFILE.resume` in `src/components/portfolio/content.ts`.
-
-## Credits
-
-The folding-phone mechanism comes from the **Foldfolio** Framer template, used under its licence. Everything else, the content, lock screen, desk mat and portfolio screens, is by Aadarsh Choudhari.
