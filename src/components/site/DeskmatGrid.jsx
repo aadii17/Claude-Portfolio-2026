@@ -4,18 +4,19 @@ import { useEffect, useRef, useState } from 'react'
  * - a fine square grid with a stronger line every 5 squares (CSS gradients, always crisp)
  * - ruler ticks along all four edges, numbered every major line, like a mat's measured border
  * - 30° / 45° / 60° angle guides from the bottom-left corner and a small registration mark
- * Quiet ink on the page's off-white, so the phone stays the focus. Rendered in Foldfolio's
- * `backdrop` slot; it fills the stage and redraws its ruler on resize. */
+ * A green self-healing cutting mat with light printed lines, so the phone stays the focus.
+ * Rendered in Foldfolio's `backdrop` slot; it fills the stage and redraws its ruler on resize. */
 
+export const MAT = '#2f6e50' // the mat's green (also used for the intro curtain, see FoldfolioHero.jsx)
+const INK = '255,255,255' // the printed lines, as r,g,b
 const UNIT = 16 // one grid square, px
 const MAJOR = 5 // a major line every 5 squares (80px), numbered on the rulers
 const TOP = 44 // top ruler sits just under the fixed nav
 const BOTTOM = 40 // bottom ruler sits just above the fixed footer
 const BOTTOM_PHONE = 76 // phones: the footer wraps to two lines, so the ruler sits higher
-const INK = '17,17,17'
 
 export default function DeskmatGrid() {
-  const box = useRef<HTMLDivElement>(null)
+  const box = useRef(null)
   const [size, setSize] = useState({ w: 0, h: 0 })
 
   useEffect(() => {
@@ -32,8 +33,8 @@ export default function DeskmatGrid() {
   const { w, h } = size
   const top = TOP
   const bottom = h - (w < 810 ? BOTTOM_PHONE : BOTTOM)
-  const ticks: string[] = []
-  const labels: { x: number; y: number; t: string; a?: 'end' | 'start' | 'middle' }[] = []
+  const ticks = []
+  const labels = []
 
   if (w && h) {
     // horizontal rulers (top + bottom): a tick every square, longer on half and major lines
@@ -52,7 +53,7 @@ export default function DeskmatGrid() {
 
   // angle guides from the bottom-left corner of the measured area
   const reach = Math.hypot(w, h)
-  const guide = (deg: number) => {
+  const guide = (deg) => {
     const r = (deg * Math.PI) / 180
     return `M0 ${bottom}L${(Math.cos(r) * reach).toFixed(1)} ${(bottom - Math.sin(r) * reach).toFixed(1)}`
   }
@@ -63,11 +64,12 @@ export default function DeskmatGrid() {
       className="deskmat"
       aria-hidden
       style={{
+        backgroundColor: MAT,
         backgroundImage: [
-          `linear-gradient(rgba(${INK},.085) 1px, transparent 1px)`,
-          `linear-gradient(90deg, rgba(${INK},.085) 1px, transparent 1px)`,
-          `linear-gradient(rgba(${INK},.04) 1px, transparent 1px)`,
-          `linear-gradient(90deg, rgba(${INK},.04) 1px, transparent 1px)`,
+          `linear-gradient(rgba(${INK},.16) 1px, transparent 1px)`,
+          `linear-gradient(90deg, rgba(${INK},.16) 1px, transparent 1px)`,
+          `linear-gradient(rgba(${INK},.07) 1px, transparent 1px)`,
+          `linear-gradient(90deg, rgba(${INK},.07) 1px, transparent 1px)`,
         ].join(','),
         backgroundSize: `${UNIT * MAJOR}px ${UNIT * MAJOR}px, ${UNIT * MAJOR}px ${UNIT * MAJOR}px, ${UNIT}px ${UNIT}px, ${UNIT}px ${UNIT}px`,
         backgroundPosition: `0 ${top}px`,
@@ -76,15 +78,15 @@ export default function DeskmatGrid() {
       {w > 0 && (
         <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
           {/* measured border */}
-          <path d={`M0 ${top}H${w}M0 ${bottom}H${w}`} stroke={`rgba(${INK},.22)`} strokeWidth="1" shapeRendering="crispEdges" />
-          <path d={ticks.join('')} stroke={`rgba(${INK},.32)`} strokeWidth="1" shapeRendering="crispEdges" />
+          <path d={`M0 ${top}H${w}M0 ${bottom}H${w}`} stroke={`rgba(${INK},.34)`} strokeWidth="1" shapeRendering="crispEdges" />
+          <path d={ticks.join('')} stroke={`rgba(${INK},.45)`} strokeWidth="1" shapeRendering="crispEdges" />
           {/* angle guides */}
-          <g stroke={`rgba(${INK},.09)`} strokeWidth="1" strokeDasharray="2 5" fill="none">
+          <g stroke={`rgba(${INK},.18)`} strokeWidth="1" strokeDasharray="2 5" fill="none">
             <path d={guide(30)} />
             <path d={guide(45)} />
             <path d={guide(60)} />
           </g>
-          <g fill={`rgba(${INK},.38)`} fontSize="9" fontFamily="var(--font)" style={{ fontVariantNumeric: 'tabular-nums' }}>
+          <g fill={`rgba(${INK},.6)`} fontSize="9" fontFamily="var(--font)" style={{ fontVariantNumeric: 'tabular-nums' }}>
             {[30, 45, 60].map((d) => {
               const r = (d * Math.PI) / 180
               return (
@@ -100,7 +102,7 @@ export default function DeskmatGrid() {
             ))}
           </g>
           {/* registration mark, top-right */}
-          <g stroke={`rgba(${INK},.3)`} strokeWidth="1" fill="none" transform={`translate(${w - 56} ${top + 40})`}>
+          <g stroke={`rgba(${INK},.45)`} strokeWidth="1" fill="none" transform={`translate(${w - 56} ${top + 40})`}>
             <circle r="9" />
             <path d="M-14 0H14M0 -14V14" />
           </g>

@@ -5,7 +5,7 @@ import '@fontsource-variable/sofia-sans-extra-condensed' // lock-screen clock on
 import './index.css'
 import FoldfolioHero from './components/foldfolio/FoldfolioHero'
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById('root')).render(
   <StrictMode>
     <FoldfolioHero />
   </StrictMode>,

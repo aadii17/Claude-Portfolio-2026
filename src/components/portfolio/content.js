@@ -42,20 +42,7 @@ export const STATEMENT = {
   cta: 'Let’s design yours',
 }
 
-export type Project = {
-  id: string
-  title: string
-  category: 'Product design' | 'Enterprise SaaS' | 'Dashboards' | 'Internship'
-  year: string
-  mark: string // short monogram on the card cover
-  summary: string
-  stack: string[] // tools used
-  link?: { label: string; href: string } // add a case-study or Behance URL to show the button
-  tint: string // cover colour until you add an `image`
-  image?: string
-}
-
-export const PROJECTS: Project[] = [
+export const PROJECTS = [
   {
     id: 'ev',
     title: 'EV Parking & Charging Booking Platform',

@@ -13,7 +13,7 @@ const fmt = new Intl.DateTimeFormat('en-GB', {
 export const indiaHHMM = (d = new Date()) => fmt.format(d)
 
 let current = indiaHHMM()
-const listeners = new Set<() => void>()
+const listeners = new Set()
 let timer = 0
 
 // tick on the minute boundary, not on a fixed interval, so the phone flips exactly with the real clock
@@ -29,7 +29,7 @@ const schedule = () => {
   }, 60_000 - (now % 60_000) + 50)
 }
 
-const subscribe = (cb: () => void) => {
+const subscribe = (cb) => {
   listeners.add(cb)
   if (listeners.size === 1) {
     current = indiaHHMM()

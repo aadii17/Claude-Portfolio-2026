@@ -35,9 +35,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   --nino-muted: #7d7d7d;
 }
 
-/* Foldfolio's Basic / Glow / Orbit switch: Basic is the only background now. The colour dots stay. */
-[data-ff-switcher] { display: none !important; }
-
 .site-nav {
   position: fixed; inset: 0 0 auto; z-index: 50;
   display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; padding: 8px;
@@ -64,16 +61,26 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .site-footer a { margin-left: auto; }
 }
 
-/* ---------- Lock screen on the closed phone (LockScreen.tsx, after Foldfolio's own cover design) ---------- */
+/* ---------- Lock screen on the closed phone (LockScreen.jsx, after Foldfolio's own cover design) ---------- */
 .lock {
   position: relative; height: 100%; overflow: hidden; box-sizing: border-box;
   display: flex; flex-direction: column; align-items: center;
-  background: rgb(240, 242, 241); color: rgb(17, 17, 17); font-family: var(--font);
+  /* wallpaper (public/wallpaper.jpg) with a soft shade at the top so the white clock reads on it;
+     the crop sits a little low so the near-square Flip cover still shows the cat's face */
+  background:
+    linear-gradient(rgba(0, 0, 0, .3), rgba(0, 0, 0, 0) 42%),
+    url('/wallpaper.jpg') center 62% / cover no-repeat,
+    rgb(240, 242, 241);
+  color: rgb(17, 17, 17); font-family: var(--font);
 }
 .lock-clock {
   font: 800 132px/0.9 'Sofia Sans Extra Condensed Variable', 'Sofia Sans Extra Condensed', var(--font);
   letter-spacing: -0.01em; font-variant-numeric: tabular-nums;
 }
+/* Flip's near-square cover: crop lower so the face sits above the notification */
+.lock-flip { background-position: 0 0, center 88%, 0 0; }
+/* clock + role line sit on the photo: white with a soft shadow */
+.lock > .lock-clock, .lock > .lock-line { color: #fff; text-shadow: 0 1px 12px rgba(0, 0, 0, .35); }
 .lock-line { margin: 0; font: 500 13px/1.3 var(--font); }
 .lock-meta { font: 500 11px/1.3 var(--font); letter-spacing: 0.02em; opacity: .62; font-variant-numeric: tabular-nums; }
 .lock-spacer { flex: 1 1 auto; }
@@ -88,11 +95,44 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .lock-footer { width: 100%; display: flex; align-items: center; justify-content: space-between; }
 .lock-hint { border-radius: 999px; background: rgba(255, 255, 255, .86); }
 
-/* ---------- Precision-grid desk mat behind the phone (DeskmatGrid.tsx, in Foldfolio's backdrop slot) ---------- */
+/* ---------- Precision-grid desk mat behind the phone (DeskmatGrid.jsx, in Foldfolio's backdrop slot) ---------- */
 .deskmat { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .deskmat svg { position: absolute; inset: 0; display: block; }
 
-/* ---------- Loader (drawn over Foldfolio's closed intro curtain, see Loader.tsx) ---------- */
+/* ---------- Things on the desk mat (src/components/desk/) ---------- */
+/* they settle in once the opening curtain has parted (like Framer's appear: scale .8 -> 1);
+   the iPod's is played from DeskIPod.jsx */
+@keyframes desk-in { from { opacity: 0; scale: .8; } }
+/* isolate: the iPod's screen has z-indexed layers of its own; keep them under the phone and curtain */
+.desk-layer { position: absolute; inset: 0; pointer-events: none; isolation: isolate; }
+.desk-ipod { position: absolute; isolation: isolate; pointer-events: auto; cursor: grab; touch-action: none; user-select: none; }
+.desk-ipod.is-dragging { cursor: grabbing; }
+.desk-ipod [data-ipod-nodrag] { cursor: auto; }
+
+/* the pixel cat and its "You like cats?" switch (NekoCat.jsx) */
+.neko { position: fixed; image-rendering: pixelated; cursor: pointer; user-select: none; }
+/* opacity only on the home box: a transform there would pin the fixed cat to it */
+@keyframes neko-in { from { opacity: 0; } }
+.neko-home { animation: neko-in .45s ease-out 1.7s both; }
+.neko-toggle { animation: desk-in .45s cubic-bezier(.34, 1.3, .64, 1) 1.7s both; }
+.neko-toggle {
+  display: flex; align-items: center; gap: 10px; padding: 6px 6px 6px 12px; border-radius: 999px;
+  background: rgba(255, 255, 255, .18); border: 1px solid rgba(255, 255, 255, .2);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .12);
+  color: #fff; font: 500 14px/1.2 var(--font); letter-spacing: -0.01em; white-space: nowrap; cursor: pointer;
+}
+.neko-switch {
+  position: relative; width: 44px; height: 24px; flex: none; padding: 0; border: none; border-radius: 999px;
+  background: rgba(0, 0, 0, .32); transition: background-color .2s ease;
+}
+.neko-switch[aria-checked='true'] { background: #000; }
+.neko-switch > span {
+  position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff;
+  transition: translate .2s ease;
+}
+.neko-switch[aria-checked='true'] > span { translate: 20px 0; }
+
+/* ---------- Loader (drawn over Foldfolio's closed intro curtain, see Loader.jsx) ---------- */
 :root {
   --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
 }

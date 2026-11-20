@@ -1,19 +1,16 @@
-import type { CSSProperties } from 'react'
 import { useIndiaTime } from './indiaTime'
 import { NOTICES, SITE } from './site'
 
 /* The closed phone's cover screen, rebuilt from Foldfolio's own lock screen ("Slot · Cover" and
- * "Slot · Cover Phone" in the Foldfolio template): light screen, big condensed clock, one line under
- * it, frosted notifications, round buttons + "Scroll to unfold". Sizes are the template's; the clock
- * is live India time. */
-
-type Size = 'fold' | 'flip'
+ * "Slot · Cover Phone" in the Foldfolio template): photo wallpaper (public/wallpaper.jpg, set in
+ * index.css), big condensed clock, one line under it, frosted notifications, round buttons +
+ * "Scroll to unfold". Sizes are the template's; the clock is live India time. */
 
 // the template's two variants: Fold cover (476 wide) and Flip FlexWindow (358 wide)
 const SPEC = {
   fold: { pad: '54px 24px 26px', gap: 6, clock: 132, button: 48, hint: '9px 14px', footerTop: 18, notices: 2 },
   flip: { pad: '24px 16px 14px', gap: 4, clock: 76, button: 40, hint: '8px 12px', footerTop: 10, notices: 1 },
-} as const
+}
 
 const INK = 'rgb(17,17,17)'
 const tiles = ['linear-gradient(135deg,#9fb8c8,#56788a)', 'linear-gradient(135deg,#d9c7b0,#9a8466)']
@@ -33,16 +30,16 @@ const InstagramIcon = () => (
   </svg>
 )
 
-export default function LockScreen({ size }: { size: Size }) {
+export default function LockScreen({ size }) {
   const s = SPEC[size]
   const time = useIndiaTime()
-  const round = (extra?: CSSProperties): CSSProperties => ({
+  const round = (extra) => ({
     width: s.button, height: s.button, borderRadius: '50%', flex: 'none',
     display: 'grid', placeItems: 'center', background: 'rgba(255,255,255,.86)', ...extra,
   })
 
   return (
-    <div className="lock" style={{ padding: s.pad, gap: s.gap }}>
+    <div className={`lock lock-${size}`} style={{ padding: s.pad, gap: s.gap }}>
       <time className="lock-clock" style={{ fontSize: s.clock }} aria-label={`India time ${time}`}>{time}</time>
       <p className="lock-line">{SITE.role}</p>
 

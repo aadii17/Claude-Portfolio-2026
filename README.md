@@ -20,11 +20,10 @@ npm run build    # production build in dist/
 
 | File | What it is |
 | --- | --- |
-| `src/components/foldfolio/FoldfolioDevice.tsx` | The folding-phone component (from the Foldfolio Framer template). Edits are marked `[Z8]`. |
-| `src/components/foldfolio/framer-shim.ts` | Stand-in for the `framer` package, so the component runs in plain React (aliased in `vite.config.ts`). |
-| `src/components/foldfolio/Foldfolio.tsx` | Applies the template's default settings and merges overrides. |
-| `src/components/foldfolio/FoldfolioHero.tsx` | Mounts the phone and fills its slots (screens, cover, nav, backdrop). |
-| `src/components/portfolio/` | The portfolio shown on the inner display (`content.ts` holds all the text). |
-| `src/components/site/` | Lock screen, desk-mat background, India-time clock, name and links (`site.ts`). |
+| `src/components/foldfolio/FoldfolioDevice.jsx` | The folding-phone component (started from the Foldfolio Framer template, trimmed to what this site uses). Edits are marked `[Z8]`. |
+| `src/components/foldfolio/Foldfolio.jsx` | The phone's settings and their defaults; merges the overrides you pass. |
+| `src/components/foldfolio/FoldfolioHero.jsx` | Mounts the phone and fills its slots (screens, cover, nav, backdrop). |
+| `src/components/portfolio/` | The portfolio shown on the inner display (`content.js` holds all the text). |
+| `src/components/site/` | Lock screen, desk-mat background, India-time clock, name and links (`site.js`). |
 
-To show a resume download button on the inner display, add the PDF to `public/` and set `PROFILE.resume` in `src/components/portfolio/content.ts`.
+To show a resume download button on the inner display, add the PDF to `public/` and set `PROFILE.resume` in `src/components/portfolio/content.js`.

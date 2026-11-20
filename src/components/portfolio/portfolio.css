@@ -1,187 +1,36 @@
-/* Portfolio on the open phone's screen (Portfolio.tsx). Everything scoped under .pf.
- * One accent (the blue from the resume). Shape rule: cards 16px, inputs 10px, buttons fully round.
- * Layout by variant, not media queries: .pf-fold = 976px Fold screen, .pf-flip = 358px Flip screen. */
+/* The open phone's screen (Portfolio.jsx). Everything scoped under .pf.
+ * Sizes by variant, not media queries: .pf-fold = the Fold's 976 x 916 screen, .pf-flip = the Flip's 358 x 823.
+ * Each section is exactly one screen tall. */
 
 .pf {
   --bg: #f4f3ef;
-  --surface: #ffffff;
   --ink: #17171a;
-  --muted: #5d5d66;
-  --line: #e2e0d9;
-  --accent: #2b55c7;
-  --accent-ink: #ffffff;
-  --accent-soft: #e6ecfb;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --pad: 56px;
+  --muted: #8a8a92;
+  --line: #cfccc2;
+  --screen-h: 916px;
+  --pad: 40px;
   position: relative; box-sizing: border-box;
   background: var(--bg); color: var(--ink);
-  font-family: var(--font); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+  font-family: var(--font); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased;
 }
 .pf *, .pf *::before, .pf *::after { box-sizing: border-box; }
 .pf-fold { width: 976px; }
-.pf-flip { width: 358px; --pad: 20px; font-size: 15px; }
+.pf-flip { width: 358px; --screen-h: 823px; --pad: 16px; }
 .pf p { margin: 0; }
-.pf a { color: inherit; }
-.pf button { font: inherit; color: inherit; cursor: pointer; }
-.pf :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-/* ---------- shared pieces ---------- */
-.pf-section { padding: 88px var(--pad) 0; }
-.pf-flip .pf-section { padding-top: 64px; }
-.pf-h2 { margin: 0 0 28px; font-size: 40px; line-height: 1.1; font-weight: 650; letter-spacing: -0.03em; }
-.pf-flip .pf-h2 { font-size: 30px; margin-bottom: 20px; }
-.pf-h3 { margin: 22px 0 10px; font-size: 13px; font-weight: 600; color: var(--muted); }
-.pf-h3:first-child { margin-top: 0; }
+/* one section = one screen; room at the top for the status bar, at the bottom for the nav pill */
+.pf-section { height: var(--screen-h); padding: 56px var(--pad) 88px; }
+.pf-section:nth-child(even) { background: #ebe9e2; }
 
-.pf-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  height: 48px; padding: 0 22px; border-radius: 999px; border: 1px solid transparent;
-  font-size: 15px; font-weight: 600; line-height: 1; text-decoration: none; white-space: nowrap;
-  transition: background-color 180ms ease, border-color 180ms ease, transform 160ms var(--ease);
-  touch-action: manipulation;
+.pf-ph {
+  height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  border: 1.5px dashed var(--line); border-radius: 24px; text-align: center;
 }
-.pf-btn:active { transform: scale(0.97); transition-duration: 0ms; }
-/* .pf scoped so these beat the `.pf button { color: inherit }` reset */
-.pf .pf-btn-fill { background: var(--accent); color: var(--accent-ink); }
-.pf .pf-btn-line { background: transparent; border-color: var(--ink); color: var(--ink); }
-.pf .pf-btn-light { background: var(--bg); color: var(--ink); }
-@media (hover: hover) and (pointer: fine) {
-  .pf .pf-btn-fill:hover { background: #2448ad; }
-  .pf .pf-btn-line:hover { background: var(--ink); color: var(--bg); }
-  .pf .pf-btn-light:hover { background: #fff; }
-}
-
-.pf-chips, .pf-stack { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.pf-chips li { padding: 7px 13px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: 14px; }
-
-/* ---------- 1. Hero ---------- */
-.pf-hero {
-  display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
-  min-height: 916px; padding: 60px var(--pad) 110px;
-  background:
-    radial-gradient(60% 50% at 88% 18%, var(--accent-soft), transparent 70%),
-    var(--bg);
-}
-.pf-flip .pf-hero { min-height: 823px; padding: 52px var(--pad) 104px; justify-content: flex-start; padding-top: 72px; }
-.pf-hero-id { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
-.pf-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; object-position: top; background: var(--surface); border: 1px solid var(--line); }
-.pf-at { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; color: var(--muted); }
-.pf-at img { height: 22px; width: auto; }
-.pf-hero-title { margin: 0; max-width: 15ch; font-size: 64px; line-height: 1.04; font-weight: 650; letter-spacing: -0.04em; }
-.pf-flip .pf-hero-title { font-size: 40px; }
-.pf-hi { display: block; color: var(--muted); font-weight: 500; }
-/* the rotating last word: words stack in one grid cell, only the current one shows */
-.pf-word { display: inline-grid; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; color: var(--accent); vertical-align: bottom; }
-.pf-word > span { grid-area: 1 / 1; opacity: 0; transform: translateY(0.35em); transition: opacity 320ms var(--ease), transform 420ms var(--ease); }
-.pf-word > span.is-on { opacity: 1; transform: none; }
-.pf .pf-hero-sub { margin-top: 26px; max-width: 46ch; font-size: 18px; line-height: 1.55; color: var(--muted); text-wrap: pretty; }
-.pf-flip .pf-hero-sub { font-size: 16px; }
-.pf-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
-
-/* ---------- 2. About ---------- */
-.pf-about-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; }
-.pf-flip .pf-about-grid { grid-template-columns: 1fr; gap: 36px; }
-.pf-about-bio p + p { margin-top: 16px; }
-.pf-about-bio p { font-size: 18px; line-height: 1.6; text-wrap: pretty; }
-.pf-flip .pf-about-bio p { font-size: 16px; }
-.pf-exp { margin: 32px 0 0; display: grid; gap: 14px; }
-.pf-exp div { display: grid; gap: 2px; padding-top: 14px; border-top: 1px solid var(--line); }
-.pf-exp dt { font-weight: 600; }
-.pf-exp dd { margin: 0; color: var(--muted); font-size: 15px; display: flex; justify-content: space-between; gap: 12px; }
-.pf-exp dd span { font-variant-numeric: tabular-nums; }
-
-/* ---------- 3. Statement ---------- */
-.pf-statement { margin: 96px var(--pad) 0; padding: 72px 56px; border-radius: 16px; background: var(--ink); color: #f4f3ef; }
-.pf-flip .pf-statement { margin-top: 64px; padding: 44px 24px; }
-.pf-statement-title { margin: 0; max-width: 17ch; font-size: 56px; line-height: 1.04; font-weight: 650; letter-spacing: -0.04em; text-wrap: balance; }
-.pf-flip .pf-statement-title { font-size: 34px; }
-.pf-statement p { margin-top: 24px; max-width: 52ch; font-size: 18px; line-height: 1.6; color: rgb(244 243 239 / .76); text-wrap: pretty; }
-.pf-flip .pf-statement p { font-size: 16px; }
-.pf-statement .pf-btn { margin-top: 32px; }
-
-/* ---------- 4. Projects ---------- */
-.pf-tools { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; }
-.pf-filters { display: flex; flex-wrap: wrap; gap: 8px; }
-.pf-filter { height: 38px; padding: 0 15px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 14px; transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
-.pf-filter[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
-.pf-search { display: grid; gap: 6px; width: 260px; }
-.pf-flip .pf-search { width: 100%; }
-.pf-search label, .pf-field label { font-size: 13px; font-weight: 600; color: var(--muted); }
-.pf input, .pf textarea {
-  width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid #cfccc3; background: var(--surface);
-  font: inherit; font-size: 15px; color: var(--ink); transition: border-color 160ms ease, box-shadow 160ms ease;
-}
-.pf input::placeholder, .pf textarea::placeholder { color: #6f6f78; }
-.pf input:focus-visible, .pf textarea:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-.pf-count { margin: 20px 0 14px !important; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-
-.pf-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-.pf-flip .pf-grid { grid-template-columns: 1fr; gap: 16px; }
-.pf-card { display: flex; flex-direction: column; overflow: hidden; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); transition: transform 220ms var(--ease), box-shadow 220ms var(--ease); }
-@media (hover: hover) and (pointer: fine) {
-  .pf-card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -24px rgb(43 85 199 / .35); }
-}
-/* typographic cover until a real image is set in content.ts */
-.pf-card-cover { aspect-ratio: 16 / 9; display: flex; align-items: flex-end; padding: 18px 20px; background-size: cover; background-position: center; }
-/* a short monogram on the cover (the title itself is in the card body) */
-.pf-card-cover span { font-size: 56px; line-height: 1; font-weight: 700; letter-spacing: -0.05em; color: rgb(23 23 26 / .78); }
-.pf-flip .pf-card-cover span { font-size: 44px; }
-.pf-card-body { display: flex; flex-direction: column; gap: 10px; padding: 18px 20px 20px; flex: 1; }
-.pf-card-meta { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.pf-card-title { margin: 0; font-size: 18px; line-height: 1.3; font-weight: 650; letter-spacing: -0.01em; }
-.pf-card-text { font-size: 15px; color: var(--muted); text-wrap: pretty; }
-.pf-stack li { padding: 4px 10px; border-radius: 999px; background: var(--accent-soft); color: #1f3f99; font-size: 12.5px; font-weight: 500; }
-.pf-link { margin-top: auto; padding-top: 6px; font-size: 14px; font-weight: 600; color: var(--accent); text-underline-offset: 3px; }
-.pf-link.is-soon { color: var(--muted); font-weight: 500; }
-.pf-empty { display: grid; justify-items: start; gap: 14px; padding: 36px 28px; border-radius: 16px; border: 1px dashed #cfccc3; color: var(--muted); }
-
-/* ---------- 5. FAQ ---------- */
-.pf-faq-list { border-top: 1px solid var(--line); }
-.pf-faq-item { border-bottom: 1px solid var(--line); }
-.pf-faq-item h3 { margin: 0; }
-.pf-faq-item button {
-  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  padding: 22px 0; border: 0; background: none; text-align: left; font-size: 19px; font-weight: 600; letter-spacing: -0.01em;
-}
-.pf-flip .pf-faq-item button { font-size: 16px; padding: 18px 0; }
-/* plus that turns into a minus */
-.pf-faq-icon { position: relative; flex: none; width: 16px; height: 16px; }
-.pf-faq-icon::before, .pf-faq-icon::after { content: ''; position: absolute; left: 0; top: 7px; width: 16px; height: 2px; border-radius: 2px; background: var(--ink); transition: transform 240ms var(--ease); }
-.pf-faq-icon::after { transform: rotate(90deg); }
-.pf-faq-item.is-open .pf-faq-icon::after { transform: rotate(0deg); }
-/* collapsible answer: grid rows 0fr -> 1fr animates to the content's real height */
-.pf-faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 280ms var(--ease); }
-.pf-faq-item.is-open .pf-faq-panel { grid-template-rows: 1fr; }
-.pf-faq-panel > div { overflow: hidden; }
-.pf-faq-panel p { max-width: 62ch; padding-bottom: 22px; color: var(--muted); text-wrap: pretty; }
-
-/* ---------- 6. Contact ---------- */
-.pf-contact { display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; }
-.pf-flip .pf-contact { grid-template-columns: 1fr; gap: 28px; }
-.pf-contact-intro p { font-size: 18px; color: var(--muted); text-wrap: pretty; }
-.pf-flip .pf-contact-intro p { font-size: 16px; }
-.pf-socials { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 10px; }
-.pf-socials a { font-weight: 600; text-underline-offset: 4px; }
-.pf-form { display: grid; gap: 16px; padding: 28px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
-.pf-flip .pf-form { padding: 20px; }
-.pf-field { display: grid; gap: 6px; }
-.pf textarea { resize: vertical; min-height: 110px; }
-.pf [aria-invalid='true'] { border-color: #b3261e; }
-.pf-error { font-size: 13px; color: #b3261e; }
-.pf-form .pf-btn { justify-self: start; }
-.pf-form-note { font-size: 13px; color: var(--muted); }
-
-/* ---------- 7. Footer ---------- */
-.pf-footer {
-  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 24px;
-  margin-top: 96px; padding: 28px var(--pad) 120px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted);
-}
-.pf-flip .pf-footer { margin-top: 64px; padding-bottom: 112px; }
-.pf-footer nav { display: flex; gap: 18px; }
-.pf-footer nav button { padding: 0; border: 0; background: none; font-size: 14px; color: var(--muted); }
-@media (hover: hover) and (pointer: fine) {
-  .pf-footer nav button:hover { color: var(--ink); }
-}
+.pf-flip .pf-ph { border-radius: 18px; }
+.pf-ph-n { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pf-ph-title { margin: 0; font-size: 56px; line-height: 1.05; font-weight: 650; letter-spacing: -0.03em; }
+.pf-flip .pf-ph-title { font-size: 40px; }
+.pf-ph-note { font-size: 14px; color: var(--muted); }
 
 /* ---------- floating nav pill (Foldfolio's nav slot, on top of the open screen) ---------- */
 .pf-nav {
@@ -190,9 +39,9 @@
   -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
   font: 500 13px/1 var(--font);
 }
-.pf-nav button { padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: #17171a; transition: background-color 160ms ease, color 160ms ease; }
+.pf-nav button { padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: #17171a; font: inherit; cursor: pointer; transition: background-color 160ms ease, color 160ms ease; }
 .pf-nav button[aria-current='true'] { background: #17171a; color: #fff; }
 
 @media (prefers-reduced-motion: reduce) {
-  .pf *, .pf *::before, .pf *::after, .pf-nav button { transition: none !important; }
+  .pf-nav button { transition: none !important; }
 }
