@@ -8,7 +8,9 @@ import { useCallback, useEffect, useMemo, useRef, useState, startTransition } fr
  * The component's own box is the cat's home (the cat itself is drawn position: fixed).
  * The switch sits in a corner of the window (toggleCorner). `obstacles` are areas the cat walks
  * around but never over: it slides along their edges, waits at an edge when the cursor is on the
- * far side, and runs out if one ends up on top of it. */
+ * far side, and runs out if one ends up on top of it.
+ * `cursorless` (touch screens): no switch and no chasing or fleeing; the cat stays home and goes
+ * through its moods (sits, looks up, yawns, naps, washes, scratches), and reacts when tapped. */
 
 const FRAME = 32
 const WEBNEKO = 'https://webneko.net'
@@ -32,6 +34,18 @@ const FRAMES = {
   NW: ['nwrun1', 'nwrun2'],
 }
 const WALLS = ['scratchWallN', 'scratchWallS', 'scratchWallE', 'scratchWallW']
+// no cursor (phones, tablets): the cat sits at home and goes through its moods by itself.
+// [state, min..max duration in 100 ms ticks, ticks per animation frame, weight]
+const MOODS = [
+  ['idle', [20, 45], 1, 3],
+  ['alert', [12, 24], 1, 2],
+  ['tired', [8, 14], 1, 2],
+  ['sleeping', [45, 90], 5, 3],
+  ['scratchSelf', [18, 30], 2, 3],
+  ['wall', [14, 24], 2, 2],
+]
+// what comes after what, so it reads as a little routine: a nap is followed by waking up
+const AFTER = { sleeping: 'alert', tired: 'sleeping' }
 const STORAGE_KEY = 'neko-cat-follow-choice'
 const RETURN_HOME_TICKS = 5 * 60 * 10 // 5 minutes of 100 ms ticks
 
@@ -74,6 +88,7 @@ export default function NekoCat({
   label = 'You like cats?',
   toggleCorner = 'bottom-left',
   obstacles, // () => [{ x, y, w, h }] in window coordinates the cat walks around, never over
+  cursorless = false, // no cursor to follow or flee: no switch; the cat stays home and shows its moods
   style,
 }) {
   const px = FRAME * scale
@@ -92,15 +107,18 @@ export default function NekoCat({
   const disturbed = useRef(false)
   const calm = useRef(0)
 
+  const mood = useRef({ name: '', every: 1 }) // the current mood (cursorless), see MOODS
+
   const [, setRender] = useState(0)
-  const [following, setFollowing] = useState(followCursor)
+  const [chosen, setFollowing] = useState(followCursor)
+  const following = chosen && !cursorless // nothing to follow without a cursor
 
   // remembered choice
   useEffect(() => {
-    if (!rememberChoice) return
+    if (!rememberChoice || cursorless) return
     const saved = readChoice()
     if (saved !== null) startTransition(() => setFollowing(saved))
-  }, [rememberChoice])
+  }, [rememberChoice, cursorless])
   const toggle = useCallback(() => {
     const v = !following
     setFollowing(v)
@@ -135,7 +153,9 @@ export default function NekoCat({
     const onMove = (e) => {
       mouse.current = { x: e.clientX, y: e.clientY }
     }
-    window.addEventListener('pointermove', onMove, { passive: true })
+    // no cursor: a finger scrolling the page shouldn't chase the cat off, so it isn't tracked at all
+    // (the "mouse" stays far away: the cat never flees and always heads home)
+    if (!cursorless) window.addEventListener('pointermove', onMove, { passive: true })
     window.addEventListener('resize', measureHome)
     window.addEventListener('scroll', measureHome, { passive: true })
 
@@ -254,6 +274,26 @@ export default function NekoCat({
         frame.current = tick.current % 2
         idleTime.current = 0
         override.current = 0
+        mood.current.name = ''
+      } else if (cursorless) {
+        // its own routine: hold each mood for a while, animating at the mood's own pace
+        if (override.current > 0) {
+          override.current -= 1
+          if (tick.current % mood.current.every === 0) frame.current = (frame.current + 1) % FRAMES[state.current].length
+        } else {
+          const prev = mood.current.name
+          let pick = AFTER[prev] && Math.random() < 0.8 ? MOODS.find((m) => m[0] === AFTER[prev]) : null
+          if (!pick) {
+            const pool = MOODS.filter((m) => m[0] !== prev)
+            let r = Math.random() * pool.reduce((s, m) => s + m[3], 0)
+            pick = pool.find((m) => (r -= m[3]) < 0) || pool[0]
+          }
+          const [name, [lo, hi], every] = pick
+          mood.current = { name, every }
+          state.current = name === 'wall' ? WALLS[Math.floor(Math.random() * WALLS.length)] : name
+          frame.current = 0
+          override.current = lo + Math.floor(Math.random() * (hi - lo + 1))
+        }
       } else {
         idleTime.current += 1
         if (override.current > 0) {
@@ -296,12 +336,14 @@ export default function NekoCat({
       window.removeEventListener('scroll', measureHome)
       window.clearInterval(loop)
     }
-  }, [following, speed, fleeDistance, fleeSpeed, idleBehavior, px, measureHome])
+  }, [following, speed, fleeDistance, fleeSpeed, idleBehavior, px, measureHome, cursorless])
 
+  // a tap / click: it looks up or has a scratch (and wakes up if it was napping)
   const poke = () => {
     state.current = Math.random() > 0.5 ? 'scratchSelf' : 'alert'
+    mood.current = { name: state.current, every: 2 }
     frame.current = 0
-    override.current = 8
+    override.current = cursorless ? 14 : 8
     idleTime.current = 0
     startTransition(() => setRender((n) => n + 1))
   }
@@ -329,12 +371,14 @@ export default function NekoCat({
         className="neko"
         style={{ left: p.x, top: p.y, width: px, height: px, zIndex }}
       />
-      <label className="neko-toggle" style={corner}>
-        <span>{label}</span>
-        <button type="button" role="switch" aria-checked={following} aria-label={label} onClick={toggle} className="neko-switch">
-          <span aria-hidden />
-        </button>
-      </label>
+      {!cursorless && (
+        <label className="neko-toggle" style={corner}>
+          <span>{label}</span>
+          <button type="button" role="switch" aria-checked={following} aria-label={label} onClick={toggle} className="neko-switch">
+            <span aria-hidden />
+          </button>
+        </label>
+      )}
     </div>
   )
 }

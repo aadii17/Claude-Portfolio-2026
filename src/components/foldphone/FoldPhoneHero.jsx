@@ -27,7 +27,8 @@ import { deviceFrame } from './FoldPhoneDevice'
  *
  * On top of everything: the pixel cat and its "You like cats?" switch (NekoCat), bottom-left
  * (bottom-right on small screens, where the finish switcher takes the left corner). The cat walks
- * around the phone and the iPod, never over them.
+ * around the phone and the iPod, never over them. On touch screens (no cursor) there's no switch:
+ * the cat sits in that corner and goes through its moods by itself.
  */
 
 function Call() {
@@ -54,7 +55,9 @@ const useMedia = (query) =>
 
 // the phone's layout, shared with the iPod so it can keep clear of the phone
 const SETTINGS = {
-  phone: withDefaults({ layout: { top: 32, bottom: 32, maxScale: 1 }, switcher: { bottom: 24 } }),
+  // phones: the phone starts below the name block (name, role and copyright), so even unfolded it
+  // never covers them
+  phone: withDefaults({ layout: { top: 104, bottom: 32, maxScale: 1 }, switcher: { bottom: 24 } }),
   wide: withDefaults({ layout: { top: 32, bottom: 32, maxScale: 0.9 }, switcher: { bottom: 24 } }),
 }
 
@@ -79,10 +82,11 @@ const catObstacles = (settings) => () => {
   const h = window.innerHeight
   const d = deviceFrame({ w, h }, settings.layout, settings.switcher)
   const out = [{ x: d.left, y: d.top, w: d.width, h: d.height }]
-  const ipod = document.querySelector('.desk-ipod')
-  if (ipod) {
-    const r = ipod.getBoundingClientRect()
-    out.push({ x: r.left - 4, y: r.top - 4, w: r.width + 22, h: r.height + 24 }) // + its side and shadow
+  // everything lying on the desk (the iPod, the booster pack), + its side and shadow
+  for (const o of document.querySelectorAll('[data-desk-object]')) {
+    if (!o.offsetWidth || getComputedStyle(o).visibility === 'hidden') continue
+    const r = o.getBoundingClientRect()
+    out.push({ x: r.left - 4, y: r.top - 4, w: r.width + 22, h: r.height + 24 })
   }
   return out
 }
@@ -96,6 +100,9 @@ export default function FoldPhoneHero() {
   const compact = useMedia('(max-width: 559.98px)') // the device moves its finish switcher to the left here
   const settings = phone ? SETTINGS.phone : SETTINGS.wide
   const catSide = compact ? 'right' : 'left'
+  // phones and tablets: no cursor to chase or run from, so no switch; the cat sits in its corner
+  // and goes through its moods by itself (tap it and it reacts)
+  const noCursor = useMedia('(hover: none), (pointer: coarse)')
 
   // Standalone: the phone fills the page (Fold 8 on wide screens, Flip 8 on phones) and opens with
   // the template's curtain intro.
@@ -124,7 +131,9 @@ export default function FoldPhoneHero() {
         scale={compact ? 1 : 1.5} // smaller on small screens, where it shares the row with the colour dots
         toggleCorner={`bottom-${catSide}`}
         obstacles={phone ? OBSTACLES.phone : OBSTACLES.wide}
-        style={{ position: 'fixed', bottom: compact ? 19 : 11, [catSide]: CAT_HOME_X, zIndex: 30 }}
+        cursorless={noCursor}
+        // without the switch, home is the corner the switch had
+        style={{ position: 'fixed', bottom: compact ? 19 : 11, [catSide]: noCursor ? 24 : CAT_HOME_X, zIndex: 30 }}
       />
     </>
   )

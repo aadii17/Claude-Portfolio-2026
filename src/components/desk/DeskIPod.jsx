@@ -14,6 +14,19 @@ const GAP = 28 // clear space kept around the unfolded phone (it also tilts towa
 const EDGE = { x: 24, top: 60, bottom: 56 } // stay inside the mat's rulers
 const TRIES = 400
 
+// the other things lying on the desk (iPod, booster pack, ...: anything marked data-desk-object),
+// as rects in the desk layer's coordinates with a little space around them
+export function otherDeskObjects(layer, self, pad = 18) {
+  if (!layer) return []
+  const l = layer.getBoundingClientRect()
+  return Array.from(document.querySelectorAll('[data-desk-object]'))
+    .filter((e) => e !== self && e.offsetWidth)
+    .map((e) => {
+      const r = e.getBoundingClientRect()
+      return { x: r.left - l.left - pad, y: r.top - l.top - pad, w: r.width + 2 * pad, h: r.height + 2 * pad }
+    })
+}
+
 const overlaps = (a, b) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
 
 // the areas to keep clear on a stage of size { w, h }
@@ -29,7 +42,7 @@ export function keepClear({ w, h }, { layout, switcher }, extra = []) {
   ]
 }
 
-function fits(r, size, blocked) {
+export function fits(r, size, blocked) {
   return (
     r.x >= EDGE.x &&
     r.y >= EDGE.top &&
@@ -39,10 +52,11 @@ function fits(r, size, blocked) {
   )
 }
 
-function pickSpot(size, blocked) {
-  for (const k of SCALES) {
-    const w = IPOD.w * k
-    const h = IPOD.h * k
+// a random free spot for an object of size dims, trying each scale in turn; null = no room
+export function pickSpot(size, blocked, dims = IPOD, scales = SCALES) {
+  for (const k of scales) {
+    const w = dims.w * k
+    const h = dims.h * k
     const spanX = size.w - 2 * EDGE.x - w
     const spanY = size.h - EDGE.top - EDGE.bottom - h
     if (spanX < 0 || spanY < 0) continue
@@ -101,7 +115,7 @@ export default function DeskIPod({ settings, avoid, ipod }) {
         const h = IPOD.h * cur.k
         return { ...cur, x: Math.min(Math.max(0, cur.x), size.w - w), y: Math.min(Math.max(0, cur.y), size.h - h) }
       }
-      const blocked = keepClear(size, settings, avoid ? avoid(size) : [])
+      const blocked = keepClear(size, settings, [...(avoid ? avoid(size) : []), ...otherDeskObjects(box.current, el.current)])
       if (cur && fits({ x: cur.x, y: cur.y, w: IPOD.w * cur.k, h: IPOD.h * cur.k }, size, blocked)) return cur
       return pickSpot(size, blocked)
     })
@@ -135,6 +149,7 @@ export default function DeskIPod({ settings, avoid, ipod }) {
         <div
           ref={el}
           className="desk-ipod"
+          data-desk-object=""
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}

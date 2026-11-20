@@ -22,8 +22,14 @@
 
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
+/* no rubber-band bounce at the ends of the page: it dragged the whole desk mat with it on phones */
+html, body { overscroll-behavior: none; }
 html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+/* once the site is up the page under the mat is plain mat green (index.html paints the grid only for
+   the first frame, behind the loader), so nothing behind it can look like a grid scrolling by */
+html.site-ready { background-image: none !important; }
+/* the body stays see-through: the mat (and the green page behind it) are the background */
+body { margin: 0; background: transparent; color: var(--ink); font-family: var(--font); line-height: 1.6; -webkit-font-smoothing: antialiased; }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; cursor: pointer; }
@@ -153,9 +159,9 @@ html:not(.site-ready) :is(.neko-home, .neko-toggle) { opacity: 0; }
   .sheet-info { display: none; }
   .sheet-title { left: 20px; top: 24px; }
   .sheet-name { font-size: 22px; }
-  /* phones: the cat's switch has the bottom-right corner (and the top is too narrow to share with
-     the name), so the copyright sits just above the mat's bottom ruler, which is 76px up here */
-  .sheet-copy { bottom: 86px; right: 20px; }
+  /* phones: the bottom row is full (colour dots, cat, its switch) and the open phone reaches low, so
+     the copyright is the name block's third line; the phone starts below the block (FoldPhoneHero) */
+  .sheet-copy { top: 74px; bottom: auto; left: 20px; right: auto; }
 }
 
 /* ---------- Site loader: the phone as a technical drawing on the mat (SiteLoader.jsx) ---------- */

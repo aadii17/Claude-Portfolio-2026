@@ -48,6 +48,7 @@ const EDGE = 7
 const EASE = "cubic-bezier(.16,1,.3,1)"
 const PAGE_CSS = `
 .ffm-lite *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.ff-backdrop{height:100lvh!important}
 @media (hover: hover) and (pointer: fine){
 .ffm-hover .ffh-b{transition:translate .45s ${EASE},filter .45s ease,box-shadow .45s ease}
 .ffm-hover .ffh-b:hover{translate:0 -3px;filter:brightness(1.1);box-shadow:0 14px 26px -14px rgba(0,0,0,.5)}
@@ -1871,7 +1872,10 @@ export default function FoldPhoneDevice(props) {
         <div
             data-ff-dots=""
             style={{
-                ...abs,
+                // [Z8] pinned to the screen's real bottom edge, like the cat's switch beside it: the stage
+                // keeps its first height on phones (see vp), so stage-bottom drifted above it once the
+                // address bar slid away
+                position: "fixed",
                 left: compact ? switcher.right : "50%",
                 bottom: switcher.bottom,
                 transform: compact ? "none" : "translateX(-50%)",
@@ -1948,7 +1952,11 @@ export default function FoldPhoneDevice(props) {
                     background: pageBg || undefined,
                 }}
             >
-                <div style={fill}>
+                {/* [Z8] the layer behind the phone is pinned to the screen and as tall as the screen gets
+                    once a phone's address bar slides away (100lvh): the stage itself keeps its first
+                    height (so the layout doesn't jump), which used to leave a strip at the bottom where
+                    the page scrolled by underneath. Fixed escapes the stage's overflow clip. */}
+                <div className="ff-backdrop" style={{ position: "fixed", left: 0, top: 0, width: "100%", height: "100vh" }}>
                     <div style={{ ...fill, pointerEvents: "none", background: tintBg }} />
                     {props.backdrop /* [BG] your own layer behind the phone (above the Basic tint) */}
                 </div>
