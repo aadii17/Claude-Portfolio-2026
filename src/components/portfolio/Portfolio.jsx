@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import '@fontsource-variable/mona-sans'
 import '@fontsource-variable/zalando-sans'
-import { goTo, usePortfolio } from './store'
+import { goTo, store, usePortfolio } from './store'
+import { FAQ } from './content'
+import { answer } from './answer'
 import { SITE } from '../site/site'
 import './portfolio.css'
 
@@ -15,6 +17,7 @@ const SECTIONS = [
   { id: 'home', label: 'Home' },
   { id: 'projects', label: 'Work' },
   { id: 'about', label: 'About' },
+  { id: 'faq', label: 'FAQ' },
   { id: 'contact', label: 'Contact' },
 ]
 
@@ -152,6 +155,180 @@ function Hero({ variant }) {
   )
 }
 
+/* ---------- FAQ: "Small talk" ----------
+ * The title and a line on the left, the questions on the right as an accordion (one open at a
+ * time; the plus turns into a cross), and under them an "ask AI" box: an AI assistant answers
+ * questions about you from knowledge.js, and its answer opens under the box like the others.
+ * Which question is open lives in the store, so both halves of the open screen agree.
+ * Questions and answers: FAQ in content.js. */
+const isTouch = () => window.matchMedia('(hover: none), (pointer: coarse)').matches
+const gmail = (to, su = '', body = '') =>
+  `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(su)}&body=${encodeURIComponent(body)}`
+// computers: Gmail in a new tab; phones: the phone's own mail app
+function sendMail(subject = '', body = '') {
+  if (isTouch()) window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  else window.open(gmail(SITE.email, subject, body), '_blank', 'noopener')
+}
+
+function ContactAnswer() {
+  const tel = SITE.phone.replace(/^\+91(\d{5})(\d{5})$/, '+91 $1 $2')
+  return (
+    <>
+      <p>
+        Email is best:{' '}
+        <a
+          href={`mailto:${SITE.email}`}
+          onClick={(e) => (e.preventDefault(), sendMail('Hello from your portfolio'))}
+        >
+          {SITE.email}
+        </a>
+        . I reply within a day or two.
+      </p>
+      <p>
+        Or call me on <a href={`tel:${SITE.phone}`}>{tel}</a>, or swipe the call that comes in when you fold this phone shut.
+      </p>
+    </>
+  )
+}
+
+// the site's favicon (the pixel half-open phone, public/favicon.svg), drawn inline in black: the file
+// itself turns white in dark mode, which would vanish on the light row
+const FAVICON_D =
+  'M14 1h3v1h-3zM6 2h12v1h-12zM3 3h11v1h-11zM15 3h3v1h-3zM2 4h4v1h-4zM15 4h3v1h-3zM19 4h4v1h-4zM2 5h2v1h-2zM13 5h1v1h-1zM15 5h3v1h-3zM19 5h7v1h-7zM2 6h2v1h-2zM5 6h2v1h-2zM13 6h1v1h-1zM15 6h3v1h-3zM19 6h2v1h-2zM23 6h5v1h-5zM2 7h2v1h-2zM5 7h1v1h-1zM15 7h3v1h-3zM19 7h2v1h-2zM26 7h3v1h-3zM2 8h2v1h-2zM15 8h3v1h-3zM19 8h2v1h-2zM26 8h1v1h-1zM28 8h2v1h-2zM2 9h2v1h-2zM15 9h3v1h-3zM19 9h2v1h-2zM28 9h2v1h-2zM2 10h2v1h-2zM15 10h3v1h-3zM19 10h2v1h-2zM28 10h2v1h-2zM2 11h2v1h-2zM15 11h3v1h-3zM19 11h2v1h-2zM28 11h2v1h-2zM2 12h2v1h-2zM15 12h3v1h-3zM19 12h2v1h-2zM28 12h2v1h-2zM2 13h2v1h-2zM15 13h3v1h-3zM19 13h2v1h-2zM28 13h2v1h-2zM2 14h2v1h-2zM15 14h3v1h-3zM19 14h2v1h-2zM28 14h2v1h-2zM2 15h2v1h-2zM15 15h3v1h-3zM19 15h2v1h-2zM28 15h2v1h-2zM2 16h2v1h-2zM15 16h3v1h-3zM19 16h2v1h-2zM28 16h2v1h-2zM2 17h2v1h-2zM15 17h3v1h-3zM19 17h2v1h-2zM28 17h2v1h-2zM2 18h2v1h-2zM15 18h3v1h-3zM19 18h2v1h-2zM28 18h2v1h-2zM2 19h2v1h-2zM15 19h3v1h-3zM19 19h2v1h-2zM28 19h2v1h-2zM2 20h2v1h-2zM15 20h3v1h-3zM19 20h2v1h-2zM28 20h2v1h-2zM2 21h2v1h-2zM15 21h3v1h-3zM19 21h2v1h-2zM28 21h2v1h-2zM2 22h2v1h-2zM15 22h3v1h-3zM19 22h2v1h-2zM28 22h2v1h-2zM2 23h2v1h-2zM15 23h3v1h-3zM19 23h2v1h-2zM28 23h2v1h-2zM2 24h2v1h-2zM15 24h3v1h-3zM19 24h2v1h-2zM28 24h2v1h-2zM2 25h2v1h-2zM15 25h3v1h-3zM19 25h2v1h-2zM26 25h3v1h-3zM2 26h2v1h-2zM15 26h3v1h-3zM19 26h2v1h-2zM23 26h5v1h-5zM2 27h2v1h-2zM15 27h3v1h-3zM19 27h7v1h-7zM2 28h4v1h-4zM15 28h3v1h-3zM19 28h4v1h-4zM3 29h11v1h-11zM15 29h3v1h-3zM6 30h12v1h-12zM14 31h3v1h-3z'
+function FavIcon() {
+  return (
+    <svg className="pf-faq-fav" viewBox="0 0 32 32" width="30" height="30" aria-hidden shapeRendering="crispEdges">
+      <path d={FAVICON_D} fill="currentColor" />
+    </svg>
+  )
+}
+
+/* Ask AI: the question is answered from knowledge.js (and the FAQ's own questions), matched word
+ * by word in the browser by answer.js. No AI, no server, nothing saved. The answer shows under the
+ * input like an opened FAQ answer, and the next question replaces it. The current answer lives in
+ * the store (store.ai) only so both halves of the open screen show the same thing. */
+const THINK_MS = 450 // a short "Thinking…" so an instant answer doesn't feel abrupt
+function askAI(question) {
+  store.set({ faq: null, ai: { q: question, a: '', error: false, loading: true } }) // close any open FAQ question
+  setTimeout(() => {
+    if (store.get().ai.q !== question) return // a newer question (or a close) since
+    store.set({ ai: { q: question, a: answer(question), error: false, loading: false } })
+  }, THINK_MS)
+}
+
+function Thinking() {
+  const el = useRef(null)
+  useEffect(() => {
+    const n = el.current
+    if (!n?.animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    // Web Animations: the phone's per-frame restyling keeps restarting CSS animations
+    const a = n.animate([{ opacity: 0.35 }, { opacity: 1 }, { opacity: 0.35 }], { duration: 1200, iterations: Infinity })
+    return () => a.cancel()
+  }, [])
+  return (
+    <p ref={el} className="pf-ai-thinking">
+      Thinking…
+    </p>
+  )
+}
+
+// the answer, styled as an opened FAQ item: the question as its title, a cross to close it
+function AiAnswer() {
+  const { ai } = usePortfolio()
+  if (!ai.q) return null
+  return (
+    <div className="pf-faq-item is-open pf-ai-answer" aria-live="polite">
+      <div className="pf-faq-q">
+        <span>{ai.q}</span>
+        <button
+          type="button"
+          className="pf-ai-close"
+          aria-label="Close answer"
+          onClick={() => store.set({ ai: { q: '', a: '', error: false, loading: false } })}
+        >
+          <svg className="pf-faq-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden>
+            <path d="M12 4v16M4 12h16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </button>
+      </div>
+      <div className="pf-faq-a">
+        <div className="pf-faq-a-inner">{ai.loading ? <Thinking /> : <p className={ai.error ? 'pf-ai-error' : undefined}>{ai.a}</p>}</div>
+      </div>
+    </div>
+  )
+}
+
+function AskAI() {
+  const [q, setQ] = useState('')
+  const send = (e) => {
+    e.preventDefault()
+    const question = q.trim()
+    if (!question) return
+    setQ('')
+    askAI(question)
+  }
+  return (
+    <form className="pf-faq-ask" onSubmit={send}>
+      <FavIcon />
+      <input
+        type="text"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder={FAQ.ask}
+        aria-label={FAQ.ask}
+        enterKeyHint="send"
+        maxLength={500}
+      />
+      <button type="submit" aria-label="Send" disabled={!q.trim()}>
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden>
+          <path d="M12 19V5m0 0-6 6m6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+    </form>
+  )
+}
+
+function Faq() {
+  const { faq: open } = usePortfolio()
+  return (
+    <section className="pf-section pf-faq" data-pf="faq" aria-label="FAQ">
+      <div className="pf-faq-head">
+        <h2 className="pf-faq-title">{FAQ.title}</h2>
+        <p className="pf-faq-intro">{FAQ.intro}</p>
+      </div>
+      <div className="pf-faq-list">
+        {FAQ.items.map((it) => {
+          const on = open === it.id
+          return (
+            <div key={it.id} className={`pf-faq-item${on ? ' is-open' : ''}`}>
+              <button
+                type="button"
+                className="pf-faq-q"
+                aria-expanded={on}
+                aria-controls={`pf-faq-${it.id}`}
+                onClick={() => store.set({ faq: on ? null : it.id })}
+              >
+                <span>{it.q}</span>
+                <svg className="pf-faq-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden>
+                  <path d="M12 4v16M4 12h16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
+              {/* 0fr -> 1fr: the answer opens to its own height */}
+              <div className="pf-faq-a" id={`pf-faq-${it.id}`} role="region" aria-hidden={!on}>
+                <div className="pf-faq-a-inner">
+                  {it.contact ? <ContactAnswer /> : it.a.map((p, i) => <p key={i}>{p}</p>)}
+                </div>
+              </div>
+            </div>
+          )
+        })}
+        <AskAI />
+        <AiAnswer />
+      </div>
+    </section>
+  )
+}
+
 function Placeholder({ id, label, n }) {
   return (
     <section className="pf-section" data-pf={id} aria-label={label}>
@@ -183,7 +360,15 @@ export function PortfolioNav() {
 export default function Portfolio({ variant }) {
   return (
     <div className={`pf pf-${variant}`}>
-      {SECTIONS.map((s, i) => (s.id === 'home' ? <Hero key={s.id} variant={variant} /> : <Placeholder key={s.id} {...s} n={i + 1} />))}
+      {SECTIONS.map((s, i) =>
+        s.id === 'home' ? (
+          <Hero key={s.id} variant={variant} />
+        ) : s.id === 'faq' ? (
+          <Faq key={s.id} />
+        ) : (
+          <Placeholder key={s.id} {...s} n={i + 1} />
+        ),
+      )}
     </div>
   )
 }

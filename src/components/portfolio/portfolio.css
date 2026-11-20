@@ -81,6 +81,80 @@
 @media (hover: hover) and (pointer: fine) { .pf-roll:hover .pf-roll-inner { translate: 0 -24px; } }
 .pf-roll:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 4px; }
 
+/* ---------- FAQ: "Small talk" ----------
+   White, the big title top-left, the questions as soft grey rows on the right; under them the
+   "ask AI" box. Phones: one column. */
+.pf-faq {
+  display: grid; grid-template-columns: minmax(0, 1fr) 470px; gap: 40px; align-items: start; align-content: start;
+  padding: 88px 30px 104px; background: #fff !important; color: #000; overflow: hidden;
+  font-family: 'Zalando Sans Variable', 'Zalando Sans', var(--font);
+}
+.pf-faq-head { display: flex; flex-direction: column; gap: 22px; }
+.pf-faq-title {
+  margin: 0; font: 500 112px/.95 'Mona Sans Variable', 'Mona Sans', var(--font); letter-spacing: -.035em;
+}
+.pf-faq-intro { max-width: 300px; font-size: 17px; line-height: 1.55; color: rgb(0 0 0 / .6); }
+.pf-faq-list { display: flex; flex-direction: column; gap: 10px; }
+.pf-faq-item { border-radius: 14px; background: #f6f6f6; transition: background-color .2s ease; }
+.pf-faq-q {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%;
+  padding: 20px 22px; border: 0; background: none; color: inherit; text-align: left; cursor: pointer;
+  font: 400 17px/1.35 'Zalando Sans Variable', 'Zalando Sans', var(--font);
+}
+.pf-faq-q:focus-visible { outline: 2px solid #000; outline-offset: -2px; border-radius: 14px; }
+.pf-faq-icon { flex: none; color: rgb(0 0 0 / .45); transition: rotate .35s cubic-bezier(.2, .8, .2, 1); }
+.pf-faq-item.is-open .pf-faq-icon { rotate: 45deg; }
+@media (hover: hover) and (pointer: fine) { .pf-faq-item:not(.is-open):hover { background: #efefef; } }
+/* the answer opens to its own height */
+.pf-faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s cubic-bezier(.2, .8, .2, 1); }
+.pf-faq-item.is-open .pf-faq-a { grid-template-rows: 1fr; }
+.pf-faq-a-inner {
+  overflow: hidden; display: flex; flex-direction: column; gap: 12px;
+  padding: 0 22px; font-size: 15px; line-height: 1.65; color: rgb(0 0 0 / .62);
+  transition: padding-bottom .4s cubic-bezier(.2, .8, .2, 1);
+}
+.pf-faq-item.is-open .pf-faq-a-inner { padding-bottom: 22px; }
+.pf-faq-a-inner a { color: #000; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgb(0 0 0 / .3); }
+/* ask AI: the answer is an opened FAQ item under the input (same look as the others) */
+.pf-ai-answer .pf-faq-q { cursor: default; }
+.pf-ai-close { flex: none; display: grid; place-items: center; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
+.pf-ai-close .pf-faq-icon { rotate: 45deg; }
+.pf-ai-close:focus-visible { outline: 2px solid #000; outline-offset: 2px; border-radius: 6px; }
+.pf-ai-thinking { color: rgb(0 0 0 / .45); }
+.pf-ai-error { color: rgb(170 40 30); }
+/* the input */
+.pf-faq-ask {
+  display: flex; align-items: center; gap: 14px; padding: 12px 12px 12px 22px; border-radius: 14px; background: #f6f6f6;
+}
+.pf-faq-fav { flex: none; display: block; color: #000; }
+.pf-faq-ask input {
+  flex: 1; min-width: 0; padding: 8px 0; border: 0; background: none; outline: none; color: #000;
+  font: 400 17px/1.35 'Zalando Sans Variable', 'Zalando Sans', var(--font);
+}
+.pf-faq-ask input::placeholder { color: rgb(0 0 0 / .32); }
+.pf-faq-ask button {
+  flex: none; display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 50%;
+  background: #000; color: #fff; cursor: pointer; transition: background-color .2s ease, opacity .2s ease;
+}
+.pf-faq-ask button:disabled { background: rgb(0 0 0 / .14); cursor: default; }
+.pf-faq-ask:focus-within { box-shadow: inset 0 0 0 1.5px rgb(0 0 0 / .14); }
+.pf-flip .pf-faq { grid-template-columns: 1fr; gap: 24px; padding: 64px 18px 92px; }
+.pf-flip .pf-faq-head { gap: 12px; }
+.pf-flip .pf-faq-title { font-size: 58px; }
+.pf-flip .pf-faq-intro { font-size: 14px; }
+.pf-flip .pf-faq-list { gap: 8px; }
+.pf-flip .pf-faq-q { padding: 15px 16px; font-size: 15px; }
+.pf-flip .pf-faq-icon { width: 20px; height: 20px; }
+.pf-flip .pf-faq-a-inner { padding: 0 16px; font-size: 13.5px; line-height: 1.6; gap: 10px; }
+.pf-flip .pf-faq-item.is-open .pf-faq-a-inner { padding-bottom: 16px; }
+.pf-flip .pf-faq-ask { padding: 8px 8px 8px 16px; gap: 10px; }
+.pf-flip .pf-faq-ask input { font-size: 15px; }
+.pf-flip .pf-faq-fav { width: 24px; height: 24px; }
+.pf-flip .pf-faq-ask button { width: 36px; height: 36px; }
+@media (prefers-reduced-motion: reduce) {
+  .pf-faq-a, .pf-faq-a-inner, .pf-faq-icon { transition: none !important; }
+}
+
 /* ---------- floating nav pill (FoldPhone's nav slot, on top of the open screen) ---------- */
 .pf-nav {
   display: flex; gap: 2px; padding: 4px; border-radius: 999px;

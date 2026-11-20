@@ -6,6 +6,8 @@ import { useSyncExternalStore } from 'react'
 
 let state = {
   active: 'home', // the section the nav pill highlights
+  faq: null, // the FAQ question that's open (its id), or null
+  ai: { q: '', a: '', error: false, loading: false }, // the Ask AI question on screen and its answer (kept nowhere else)
 }
 const subs = new Set()
 

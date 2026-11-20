@@ -1,4 +1,4 @@
-import { SITE } from '../site/site'
+import { SITE } from '../site/site.js' // with the .js: answer.js is also run in plain Node to test it
 
 /* Everything the portfolio says lives here. Facts come from your resume
  * (public/Aadarsh_Choudhari_Resume_UIUX.pdf); lines marked DRAFT are my wording, check them. */
@@ -87,34 +87,44 @@ export const PROJECTS = [
   },
 ]
 
-// DRAFT: all answers, edit freely
-export const FAQ = [
-  {
-    id: 'work',
-    q: 'What kind of work do you do?',
-    a: 'Product design end to end: research and user flows, wireframes, high-fidelity UI, prototypes and the design system that keeps it consistent.',
-  },
-  {
-    id: 'freelance',
-    q: 'Are you available for freelance projects?',
-    a: 'I work full time at VoloX, so I take on a small number of side projects. Tell me about yours and I will say honestly whether I can give it the time it needs.',
-  },
-  {
-    id: 'devs',
-    q: 'How do you work with developers?',
-    a: 'Closely and early. I started in code, so I design with real constraints in mind and hand off components, states and edge cases, not just pretty screens.',
-  },
-  {
-    id: 'remote',
-    q: 'Do you work with teams outside India?',
-    a: 'Yes. I work remotely with teams in the US and UK and plan around the time-zone overlap.',
-  },
-  {
-    id: 'tools',
-    q: 'Which tools do you use?',
-    a: 'Mostly Figma and Framer, with Photoshop and Illustrator for visuals, Jira for planning and AI tools to explore ideas faster.',
-  },
-]
+/* The FAQ section ("Small talk"). Each answer is one or more paragraphs.
+ * DRAFT: the answers are my wording from your resume; rewrite them in your own voice.
+ * The last question (getting in touch) is built from SITE: your email and phone. */
+export const FAQ = {
+  title: 'Small talk',
+  intro: 'The short ones are here. For anything else, ask AI.',
+  items: [
+    {
+      id: 'start',
+      q: 'How did you get into design?',
+      a: [
+        'Through code. I studied computers, a BSc in IT and then an MCA, and kept caring more about how the things I built looked and felt than how they ran.',
+        'So I moved to the design side, interned as a UX designer at iTEDIUM in 2024, and have been designing products full time since.',
+      ],
+    },
+    {
+      id: 'main',
+      q: 'What’s your main thing?',
+      a: [
+        'Product design for complex tools: EV parking and charging, enterprise dashboards and SaaS platforms. I take a product from user flows and wireframes to high-fidelity UI, prototypes and the design system that keeps it consistent.',
+      ],
+    },
+    {
+      id: 'based',
+      q: 'Where are you based?',
+      a: ['Mumbai, India. I work remotely with teams in the US and UK and plan around the time-zone overlap.'],
+    },
+    {
+      id: 'future',
+      q: 'Where do you see yourself in the future?',
+      a: [
+        'Leading design on products people rely on every day, and getting even closer to how they are built, with AI-assisted design and building as part of how I work.',
+      ],
+    },
+    { id: 'contact', q: 'How can I get in touch?', contact: true },
+  ],
+  ask: 'Ask AI anything else',
+}
 
 export const SOCIALS = [
   { label: 'Behance', href: SITE.behance },

@@ -6,11 +6,11 @@
   background: rgb(20 18 16); color: #fff; font-family: var(--font);
   -webkit-font-smoothing: antialiased; user-select: none;
 }
-/* your photo, big and dimmed behind everything */
+/* the background photo, full bleed and dimmed behind everything */
 .call-bg {
-  position: absolute; left: 50%; bottom: 0; translate: -50% 0;
-  height: 74%; width: auto; max-width: none; object-fit: contain; object-position: bottom;
-  opacity: .34; pointer-events: none;
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 60%;
+  opacity: .6; pointer-events: none;
 }
 .call-ui {
   position: relative; height: 100%; box-sizing: border-box;

@@ -9,7 +9,8 @@ import './call.css'
  * One component for both phones: the Flip's small outer screen gets the compact layout through a
  * container query (call.css). */
 
-const PORTRAIT = '/hero/portrait.webp'
+const PORTRAIT = '/hero/portrait.webp' // the avatar
+const CALL_BG = '/hero/call-bg.webp' // the photo behind everything (the desert road)
 
 function PhoneIcon() {
   return (
@@ -22,7 +23,7 @@ function PhoneIcon() {
   )
 }
 
-function SlideToTalk({ href }) {
+function SlideToTalk({ href, newTab }) {
   const track = useRef(null)
   const knob = useRef(null)
   const drag = useRef(null)
@@ -69,7 +70,7 @@ function SlideToTalk({ href }) {
         track.current.style.setProperty('--slid', '0')
       }
     }, done ? 900 : 360)
-    if (done) window.location.href = href
+    if (done) newTab ? window.open(href, '_blank', 'noopener') : (window.location.href = href)
     d.moved && e.preventDefault()
     track.current.dataset.dragged = d.moved ? '1' : ''
   }
@@ -79,6 +80,7 @@ function SlideToTalk({ href }) {
       ref={track}
       className="call-slide"
       href={href}
+      {...(newTab ? { target: '_blank', rel: 'noreferrer' } : null)}
       // a link is natively draggable, and that native drag cancels the swipe after a few pixels
       draggable={false}
       onDragStart={(e) => e.preventDefault()}
@@ -112,12 +114,17 @@ const useTouch = () =>
     () => false,
   )
 
+// computers: a Gmail compose window in a new tab (a mailto: link would open whatever mail app the
+// visitor's computer has set up, often Outlook)
+const gmail = (to) => `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}`
+
 export default function CallScreen() {
-  const mail = `mailto:${SITE.email}`
-  const talk = useTouch() && SITE.phone ? `tel:${SITE.phone}` : mail
+  const mail = gmail(SITE.email)
+  const call = useTouch() && SITE.phone
+  const talk = call ? `tel:${SITE.phone}` : mail
   return (
     <div className="call">
-      <img className="call-bg" src={PORTRAIT} alt="" draggable={false} />
+      <img className="call-bg" src={CALL_BG} alt="" draggable={false} />
       <div className="call-ui">
         <h3 className="call-name">{SITE.name}</h3>
         <p className="call-sub">Incoming call · about your next project</p>
@@ -125,8 +132,8 @@ export default function CallScreen() {
           <img src={PORTRAIT} alt="" draggable={false} />
         </div>
         <div className="call-fill" />
-        <SlideToTalk href={talk} />
-        <a className="call-mail" href={mail}>
+        <SlideToTalk href={talk} newTab={!call} />
+        <a className="call-mail" href={mail} target="_blank" rel="noreferrer">
           {SITE.email}
         </a>
       </div>
