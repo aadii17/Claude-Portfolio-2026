@@ -4,7 +4,7 @@ import FoldPhoneDevice from './FoldPhoneDevice'
  * Pass only what you want to change; nested settings merge, e.g. layout={{ top: 32 }} keeps the
  * other layout defaults. Slots (screen, cover, nav, …) are passed straight through. */
 const DEFAULTS = {
-  finish: 'titanium', // frame colour: titanium | graphite | coral | sage (a visitor's pick is remembered)
+  finish: 'pistachio', // frame colour: pistachio | lavender | graphite | cream (a visitor's pick is remembered)
   screenColor: '#0B0B0B', // behind the screen content, as #rrggbb
   switcher: { right: 28, bottom: 18 }, // colour dots: distance from the bottom (and from the left on small screens)
   layout: { portraitBelow: 700, top: 72, bottom: 32, maxScale: 1.3 }, // flip phone below this width; space around the phone

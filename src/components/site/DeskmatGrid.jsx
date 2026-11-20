@@ -101,8 +101,8 @@ export default function DeskmatGrid() {
               </text>
             ))}
           </g>
-          {/* registration mark, top-right */}
-          <g stroke={`rgba(${INK},.45)`} strokeWidth="1" fill="none" transform={`translate(${w - 56} ${top + 40})`}>
+          {/* registration mark, top-right (below the sheet notes) */}
+          <g stroke={`rgba(${INK},.45)`} strokeWidth="1" fill="none" transform={`translate(${w - 56} ${top + 88})`}>
             <circle r="9" />
             <path d="M-14 0H14M0 -14V14" />
           </g>

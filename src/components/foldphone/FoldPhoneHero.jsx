@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import LockScreen from '../site/LockScreen'
 import DeskmatGrid, { MAT } from '../site/DeskmatGrid'
+import SheetLabels from '../site/TitleBlock'
 import { SITE } from '../site/site'
 import Portfolio, { PortfolioNav } from '../portfolio/Portfolio'
 import DeskIPod from '../desk/DeskIPod'
@@ -68,6 +69,8 @@ const IPOD = {
 // the cat's corner (the switch, and the cat's home right beside it), kept free of the iPod
 const CAT_ZONE = 280
 const avoidCatLeft = ({ h }) => [{ x: 0, y: h - 120, w: CAT_ZONE, h: 120 }]
+// ...and the sheet's corner labels (your name top-left, the sheet notes top-right)
+const avoidDesk = (size) => [...avoidCatLeft(size), { x: 0, y: 0, w: 280, h: 100 }, { x: size.w - 260, y: 0, w: 260, h: 100 }]
 
 // what the cat walks around: the phone (its whole unfolded area, as the iPod keeps clear of)
 // and wherever the iPod is lying right now
@@ -111,7 +114,8 @@ export default function FoldPhoneHero() {
         backdrop={
           <>
             <DeskmatGrid />
-            {!phone && <DeskIPod settings={settings} avoid={avoidCatLeft} ipod={IPOD} /> /* no iPod on mobile */}
+            <SheetLabels />
+            {!phone && <DeskIPod settings={settings} avoid={avoidDesk} ipod={IPOD} /> /* no iPod on mobile */}
           </>
         }
       />

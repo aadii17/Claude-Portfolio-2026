@@ -134,6 +134,30 @@ html:not(.site-ready) :is(.neko-home, .neko-toggle) { opacity: 0; }
 }
 .neko-switch[aria-checked='true'] > span { translate: 20px 0; }
 
+/* ---------- The sheet's corner labels: name top-left, sheet notes top-right (TitleBlock.jsx) ---------- */
+/* the same on the mat and in the loader. A patch of mat colour behind each keeps the top ruler
+   from running through the text; the negative margin keeps the text itself exactly in place. */
+.sheet-label {
+  position: absolute; z-index: 1; top: 30px; padding: 4px 8px 6px; margin: -4px -8px;
+  background: #2f6e50; color: #fff;
+  font: 500 12px/1.35 var(--font); letter-spacing: .01em; pointer-events: none; user-select: none;
+}
+.sheet-title { left: 32px; }
+.sheet-info { right: 32px; top: 32px; text-align: right; }
+.sheet-info .sheet-muted:first-of-type { margin-top: 6px; }
+.sheet-name { font: 600 26px/1 var(--font); letter-spacing: -0.02em; margin-bottom: 8px; }
+.sheet-muted { opacity: .62; }
+/* copyright, bottom-right: below the mat's bottom ruler, on the row of the cat's switch */
+.sheet-copy { top: auto; right: 32px; bottom: 18px; background: none; opacity: .62; font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) {
+  .sheet-info { display: none; }
+  .sheet-title { left: 20px; top: 24px; }
+  .sheet-name { font-size: 22px; }
+  /* phones: the cat's switch has the bottom-right corner (and the top is too narrow to share with
+     the name), so the copyright sits just above the mat's bottom ruler, which is 76px up here */
+  .sheet-copy { bottom: 86px; right: 20px; }
+}
+
 /* ---------- Site loader: the phone as a technical drawing on the mat (SiteLoader.jsx) ---------- */
 /* the sheet: the mat's own grid, lined up with DeskmatGrid (major line every 80px, starting 44px down) */
 .site-loader {
@@ -165,10 +189,6 @@ html:not(.site-ready) :is(.neko-home, .neko-toggle) { opacity: 0; }
 .site-loader { --sl-ease: cubic-bezier(.22, 1, .36, 1); }
 .site-loader.is-leaving .sl-ui { opacity: 0; }
 .sl-muted { opacity: .62; }
-.sl-title { left: 32px; top: 30px; }
-.sl-name { font: 600 26px/1 var(--font); letter-spacing: -0.02em; margin-bottom: 8px; }
-.sl-sheet { right: 32px; top: 32px; text-align: right; }
-.sl-sheet .sl-muted:first-of-type { margin-top: 6px; }
 .sl-count { left: 32px; bottom: 26px; }
 .sl-pct {
   margin-top: 2px; min-width: 2.2em;
@@ -192,9 +212,6 @@ html:not(.site-ready) :is(.neko-home, .neko-toggle) { opacity: 0; }
 @media (hover: hover) and (pointer: fine) { .sl-enter:hover .sl-enter-arrow { rotate: 45deg; } }
 @keyframes sl-in { from { opacity: 0; translate: 0 8px; } }
 @media (max-width: 640px) {
-  .sl-sheet { display: none; }
-  .sl-title { left: 20px; top: 24px; }
-  .sl-name { font-size: 22px; }
   .sl-count { left: 20px; bottom: 18px; }
   .sl-pct { font-size: 60px; }
 }

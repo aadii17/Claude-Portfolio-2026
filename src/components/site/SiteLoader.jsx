@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { MAT } from './DeskmatGrid'
 import { SITE } from './site'
 import { markSiteReady } from './ready'
+import SheetLabels from './TitleBlock'
 
 /* The site loader: a technical drawing of the phone on the green cutting mat.
  *
@@ -559,15 +560,8 @@ export default function SiteLoader() {
       <span className="sl-corner sl-tr" aria-hidden="true" />
       <span className="sl-corner sl-bl" aria-hidden="true" />
       <span className="sl-corner sl-br" aria-hidden="true" />
-      <div className="sl-ui sl-title">
-        <div className="sl-name">{SITE.name}</div>
-        <div className="sl-muted">{SITE.role}</div>
-      </div>
-      <div className="sl-ui sl-sheet">
-        <div>Sheet 01 — Fold phone</div>
-        <div className="sl-muted">Scale 1 : 1</div>
-        <div className="sl-muted">19.0760° N&nbsp;&nbsp; 72.8777° E</div>
-      </div>
+      {/* the same corner labels sit on the mat underneath, so they stay through the reveal */}
+      <SheetLabels />
       <div className="sl-ui sl-count" aria-live="polite">
         <div className="sl-muted">{ready || leaving ? 'Phone ready' : 'Assembling the phone'}</div>
         <div className="sl-pct">

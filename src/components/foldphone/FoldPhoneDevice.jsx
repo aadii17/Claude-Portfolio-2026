@@ -21,20 +21,14 @@ import {
 
 // ---------------------------------------------------------------- constants
 
-// Four hand-tuned finishes: [base, shade, highlight, deep]
+// Four finishes, Samsung's colours: [base, shade, highlight, deep]
 const FINISHES = {
-    titanium: {
-        label: "Titanium",
-        c: ["#DCD9D3", "#A6A29B", "#F7F5F1", "#6F6B65"],
-    },
-    graphite: {
-        label: "Graphite",
-        c: ["#3A3A3D", "#1B1B1D", "#6A6A6E", "#0E0E10"],
-    },
-    coral: { label: "Coral", c: ["#EFA38C", "#C4664F", "#F9CDBE", "#9B4A37"] },
-    sage: { label: "Sage", c: ["#C3CBB7", "#76816B", "#E0E6D8", "#5A6450"] },
+    pistachio: { label: "Pistachio", c: ["#B4C8BF", "#7E978C", "#DCE7E2", "#56695F"] },
+    lavender: { label: "Lavender", c: ["#BFB9D0", "#8B84A3", "#E2DEEC", "#625C7A"] },
+    graphite: { label: "Graphite", c: ["#5D6064", "#36383B", "#8B8E92", "#1D1F21"] },
+    cream: { label: "Cream", c: ["#EEEDE9", "#BDBAB3", "#FBFAF8", "#8A867E"] },
 }
-const FINISH_KEYS = ["titanium", "graphite", "coral", "sage"]
+const FINISH_KEYS = ["pistachio", "lavender", "graphite", "cream"]
 
 // Device geometry in design pixels. Screen = W - 2*(f+bz).
 // [Z8] Landscape = Galaxy Z Fold 8: a near-square open display, tall narrow cover, tight corners.
@@ -217,7 +211,8 @@ export default function FoldPhoneDevice(props) {
     useEffect(() => {
         const sync = () => {
             const s = readStore()
-            startTransition(() => setFinish(s.finish || finishProp))
+            // a pick saved before the colours changed (e.g. "coral") falls back to the default
+            startTransition(() => setFinish(FINISHES[s.finish] ? s.finish : finishProp))
         }
         sync()
         window.addEventListener(STORE_EVENT, sync)
@@ -234,7 +229,7 @@ export default function FoldPhoneDevice(props) {
             window.dispatchEvent(new Event(STORE_EVENT))
         } catch (e) {}
     }
-    const F = FINISHES[finish].c
+    const F = (FINISHES[finish] || FINISHES[FINISH_KEYS[0]]).c
 
     // ---------- scale to fit the stage (see deviceFrame below the component)
     const stageH = vp.h
@@ -1051,9 +1046,11 @@ export default function FoldPhoneDevice(props) {
     // ---------------------------------------------------------------- styles
     const T = G.T
     const Ri = G.R - b
-    const slabBg = `linear-gradient(145deg, ${F[2]} 0%, ${F[0]} 30%, ${F[1]} 55%, ${F[0]} 75%, ${F[3]} 100%)`
+    // [Z8] the metal frame: anodised aluminium with two specular bands, a crisp outer line, and a
+    // diamond-cut chamfer (a bright ring just inside the edge, then a faint dark one)
+    const slabBg = `linear-gradient(145deg, ${F[2]} 0%, ${F[0]} 16%, ${F[1]} 38%, ${F[0]} 54%, ${F[2]} 62%, ${F[0]} 70%, ${F[1]} 86%, ${F[3]} 100%)`
     const slabShadow =
-        "inset 0 1px 1px rgba(255,255,255,.82), inset 0 -1px 1px rgba(0,0,0,.3), inset 0 0 0 1px rgba(255,255,255,.25)"
+        "0 0 0 .5px rgba(0,0,0,.32), inset 0 1px 1px rgba(255,255,255,.85), inset 0 -1px 1px rgba(0,0,0,.32), inset 0 0 0 1px rgba(255,255,255,.3), inset 0 0 0 2px rgba(0,0,0,.07)"
     const abs = { position: "absolute" }
     const fill = { position: "absolute", inset: 0 }
 
@@ -1068,20 +1065,33 @@ export default function FoldPhoneDevice(props) {
             borderRadius: T / 2,
             pointerEvents: "none",
         }
+        // antenna bands across the metal side, a quarter of the way in from each end
+        const bands = (vertical) =>
+            [0.2, 0.8].map((at) => (
+                <div
+                    key={at}
+                    style={{
+                        ...abs,
+                        ...(vertical ? { left: 0, right: 0, top: `${at * 100}%`, height: 2.5 } : { top: 0, bottom: 0, left: `${at * 100}%`, width: 2.5 }),
+                        background: mixHex(F[1], F[3], 0.55),
+                        opacity: 0.75,
+                    }}
+                />
+            ))
         if (land)
             return which === "leaf" ? (
-                <div aria-hidden style={{ ...base, left: 0, top: inset, bottom: inset, width: T, transformOrigin: "0% 50%", transform: "rotateY(90deg)" }} />
+                <div aria-hidden style={{ ...base, left: 0, top: inset, bottom: inset, width: T, transformOrigin: "0% 50%", transform: "rotateY(90deg)" }}>{bands(true)}</div>
             ) : (
-                <div aria-hidden style={{ ...base, right: 0, top: inset, bottom: inset, width: T, transformOrigin: "100% 50%", transform: "rotateY(-90deg)" }} />
+                <div aria-hidden style={{ ...base, right: 0, top: inset, bottom: inset, width: T, transformOrigin: "100% 50%", transform: "rotateY(-90deg)" }}>{bands(true)}</div>
             )
         // Flip: the strip starts in the frame colour where it joins the body and darkens toward the
         // back, so it reads as one piece of metal (a dark joint made it look like a separate rod)
         const pIn = Ro * 0.3
         const pBg = (dir) => `linear-gradient(${dir}, ${F[1]}, ${F[1]} 18%, ${F[2]} 55%, ${F[3]})`
         return which === "leaf" ? (
-            <div aria-hidden data-ffedge="" style={{ ...base, background: pBg("180deg"), borderRadius: `0 0 ${T / 2}px ${T / 2}px`, top: 0, left: pIn, right: pIn, height: T, transformOrigin: "50% 0%", transform: "rotateX(-90deg)" }} />
+            <div aria-hidden data-ffedge="" style={{ ...base, background: pBg("180deg"), borderRadius: `0 0 ${T / 2}px ${T / 2}px`, top: 0, left: pIn, right: pIn, height: T, transformOrigin: "50% 0%", transform: "rotateX(-90deg)" }}>{bands(false)}</div>
         ) : (
-            <div aria-hidden data-ffedge="" style={{ ...base, background: pBg("0deg"), borderRadius: `${T / 2}px ${T / 2}px 0 0`, bottom: 0, left: pIn, right: pIn, height: T, transformOrigin: "50% 100%", transform: "rotateX(90deg)" }} />
+            <div aria-hidden data-ffedge="" style={{ ...base, background: pBg("0deg"), borderRadius: `${T / 2}px ${T / 2}px 0 0`, bottom: 0, left: pIn, right: pIn, height: T, transformOrigin: "50% 100%", transform: "rotateX(90deg)" }}>{bands(false)}</div>
         )
     }
 
@@ -1329,6 +1339,55 @@ export default function FoldPhoneDevice(props) {
     const hingeOfLeaf = land ? "R" : "B"
     const hingeOfRight = land ? "L" : "T"
     const cornerT = "border-radius .35s cubic-bezier(.2,.7,.2,1)"
+    // [Z8] antenna bands: short plastic breaks across the metal rim, two per outer edge (none on the
+    // hinge side). Drawn under the glass, so only the rim's width of each shows.
+    const rimBands = (hinge) => {
+        const bar = mixHex(F[1], F[3], 0.5)
+        const out = []
+        const along = (edge) => {
+            if (edge === "T" || edge === "B") {
+                // horizontal edge: Fold halves are narrow (one pair near the outer corner), Flip is one wide edge
+                if (land) return [hinge === "L" ? 0.8 : 0.2]
+                return [0.2, 0.8]
+            }
+            if (land) return [0.11, 0.89]
+            return [hinge === "T" ? 0.72 : 0.28]
+        }
+        for (const edge of ["T", "B", "L", "R"]) {
+            if (edge === hinge) continue
+            for (const at of along(edge)) {
+                const horiz = edge === "T" || edge === "B"
+                out.push(
+                    <div
+                        key={edge + at}
+                        aria-hidden
+                        style={{
+                            ...abs,
+                            [edge === "T" ? "top" : edge === "B" ? "bottom" : edge === "L" ? "left" : "right"]: 0,
+                            ...(horiz ? { left: `${at * 100}%`, width: 2.5, height: G.f + 1 } : { top: `${at * 100}%`, height: 2.5, width: G.f + 1 }),
+                            background: bar,
+                            opacity: 0.6,
+                            pointerEvents: "none",
+                        }}
+                    />
+                )
+            }
+        }
+        return out
+    }
+    // [Z8] the screen glass meets the frame in a soft 2.5D bevel: a faint bright lip and a dark line
+    const glassBevel = (corners, hinge) => (
+        <div
+            aria-hidden
+            style={{
+                ...abs,
+                ...insets(G.f, hinge),
+                borderRadius: inner(corners, G.f),
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,.16), inset 0 0 0 1px rgba(255,255,255,.06), inset 0 -1px 0 rgba(0,0,0,.5)",
+                pointerEvents: "none",
+            }}
+        />
+    )
     const body = (corners, hinge, children, refs, extra) => (
         <>
             <div
@@ -1342,6 +1401,7 @@ export default function FoldPhoneDevice(props) {
                     transition: refs ? cornerT : undefined,
                 }}
             />
+            {rimBands(hinge)}
             <div
                 ref={refs && refs[1]}
                 style={{
@@ -1352,6 +1412,7 @@ export default function FoldPhoneDevice(props) {
                     transition: refs ? cornerT : undefined,
                 }}
             />
+            {glassBevel(corners, hinge)}
             <div
                 ref={refs && refs[2]}
                 style={{
@@ -1377,43 +1438,147 @@ export default function FoldPhoneDevice(props) {
             return `linear-gradient(${d}, rgba(0,0,0,.5) 0%, rgba(0,0,0,.05) 100%)`
         return `linear-gradient(${d}, rgba(0,0,0,.6) 0%, rgba(0,0,0,0) 70%)`
     }
-    // Side buttons (volume + power) on the outer frame
+    // Side keys on the outer frame: a volume rocker (two-way, with its centre seam) above the power
+    // key, which doubles as the fingerprint reader (a flat, slightly darker pad set into it).
+    // [Z8] rounded metal: lit on its outer face, shaded where it leaves the frame, a drop shadow on the rim.
+    const keyBg = `linear-gradient(90deg, ${F[3]} 0%, ${F[1]} 22%, ${F[2]} 52%, ${F[0]} 70%, ${F[1]} 88%, ${F[3]})`
     const sideButtons = (
         <>
             {[
-                [0.17, 0.1],
-                [0.31, 0.06],
-            ].map(([top, h], i) => (
+                [0.17, 0.1, "volume"],
+                [0.31, 0.06, "power"],
+            ].map(([top, h, kind]) => (
                 <div
-                    key={i}
+                    key={kind}
+                    aria-hidden
                     style={{
                         ...abs,
-                        right: -3,
-                        width: 5,
+                        right: -3.5,
+                        width: 5.5,
                         borderRadius: 3,
                         top: land
                             ? `${top * 100}%`
                             : `${(top * 0.8 + 0.05) * 100}%`,
                         height: `${h * (land ? 100 : 160)}%`,
-                        background: `linear-gradient(90deg, ${F[3]}, ${F[2]} 45%, ${F[1]})`,
-                        boxShadow: "0 0 0 .5px rgba(0,0,0,.2)",
+                        background: keyBg,
+                        boxShadow: "0 0 0 .5px rgba(0,0,0,.28), 1px 0 1.5px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.45), inset 0 -1px 0 rgba(0,0,0,.18)",
+                        pointerEvents: "none",
                     }}
-                />
+                >
+                    {kind === "volume" ? (
+                        // the rocker's centre seam
+                        <div style={{ ...abs, left: 1, right: 0, top: "50%", height: 1, marginTop: -0.5, background: "rgba(0,0,0,.28)", boxShadow: "0 1px 0 rgba(255,255,255,.25)" }} />
+                    ) : (
+                        // fingerprint pad: flush, matte, a touch darker than the metal around it
+                        <div style={{ ...abs, left: 1.5, right: 0.5, top: 4, bottom: 4, borderRadius: 2, background: `linear-gradient(90deg, ${mixHex(F[1], F[3], 0.6)}, ${F[1]})`, opacity: 0.85 }} />
+                    )}
+                </div>
             ))}
         </>
     )
+    // [Z8] a sharp glare across the glass that slides as the phone tilts towards the cursor (the
+    // tilt's own --ff-ex / --ff-ey), so the screen reads as glass rather than a picture.
+    // One gradient across the whole device: each half shows its own part of it.
+    const glare = (part) => {
+        const g =
+            "linear-gradient(112deg, rgba(255,255,255,0) 40%, rgba(255,255,255,.035) 46%, rgba(255,255,255,.075) 50%, rgba(255,255,255,.035) 54%, rgba(255,255,255,0) 60%)"
+        const size = !part ? "100% 100%" : port ? `100% ${G.H}px` : `${G.W}px 100%`
+        const off = part === "R" ? -(port ? G.H : G.W) / 2 : 0 // this half's slot in the device
+        return (
+            <div
+                aria-hidden
+                style={{
+                    ...fill,
+                    pointerEvents: "none",
+                    zIndex: 8,
+                    backgroundImage: g,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: size,
+                    backgroundPosition: port
+                        ? `0 calc(${off}px + (var(--ff-ey, ${EDGE}) - ${EDGE}) * 9px)`
+                        : `calc(${off}px + var(--ff-ex, 0) * 9px) 0`,
+                }}
+            />
+        )
+    }
+    // [Z8] the hinge: where the two halves meet, its rounded end caps stand just proud of the frame at
+    // both ends of the fold. Placed on the right half's hinge edge (half over each half), so they're
+    // hidden with it when the phone is closed and drawn under the cover while it folds.
+    const hingeCaps = [0, 1].map((end) => {
+        const len = 22
+        const thick = G.f + 3
+        const pos = land
+            ? { left: -len / 2, width: len, height: thick, [end ? "bottom" : "top"]: -1.5 }
+            : { top: -len / 2, height: len, width: thick, [end ? "right" : "left"]: -1.5 }
+        return (
+            <div
+                key={end}
+                aria-hidden
+                style={{
+                    ...abs,
+                    ...pos,
+                    borderRadius: 3,
+                    background: `linear-gradient(${land ? "90deg" : "180deg"}, ${F[3]}, ${F[1]} 26%, ${F[2]} 50%, ${F[1]} 74%, ${F[3]})`,
+                    boxShadow: "0 0 0 .5px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35)",
+                    pointerEvents: "none",
+                    zIndex: 11,
+                }}
+            >
+                {/* the seam between the halves, running through the cap */}
+                <div style={{ ...abs, ...(land ? { left: "50%", top: 0, bottom: 0, width: 1, marginLeft: -0.5 } : { top: "50%", left: 0, right: 0, height: 1, marginTop: -0.5 }), background: "rgba(0,0,0,.35)" }} />
+            </div>
+        )
+    })
 
     // [Z8] the phone's body seen from the side: two plates hidden right behind the halves. Their stacked
     // shadows form a solid metal edge under (and, with the tilt, beside) the device.
+    // [Z8] the first layer is a bright chamfer where the side meets the front; the side then darkens
+    // towards the back, like a rounded metal band catching the light from above
     const sideShadow =
         Array.from({ length: 7 }, (_, i) => {
             const fr = ((i + 1) / 7).toFixed(3)
-            return `calc(var(--ff-ex, 0) * ${fr}px) calc(var(--ff-ey, ${EDGE}) * ${fr}px) 0 0 ${mixHex(F[1], F[3], (i + 1) / 7)}`
+            const c = i === 0 ? mixHex(F[2], F[1], 0.35) : i === 1 ? F[0] : mixHex(F[1], F[3], (i + 1) / 7)
+            return `calc(var(--ff-ex, 0) * ${fr}px) calc(var(--ff-ey, ${EDGE}) * ${fr}px) 0 0 ${c}`
         }).join(", ") + `, calc(var(--ff-ex, 0) * 1px) calc(var(--ff-ey, ${EDGE}) * 1px + 1.5px) 1px 0 rgba(0,0,0,.22)`
+    // [Z8] details on the bottom side of a half: they sit half-way down the side band (so they move
+    // with the tilt like the side itself) and fade out when the tilt leaves no side to put them on.
+    // The plate is behind the halves, so nothing here can show over the front.
+    const onSide = (x, w, h, style, key) => (
+        <div
+            key={key}
+            aria-hidden
+            style={{
+                ...abs,
+                left: x,
+                top: "100%",
+                width: w,
+                height: h,
+                marginLeft: -w / 2,
+                marginTop: -h / 2,
+                transform: `translate(calc(var(--ff-ex, 0) * .5px), calc(var(--ff-ey, ${EDGE}) * .55px))`,
+                opacity: `clamp(0, calc((var(--ff-ey, ${EDGE}) - 3) * .45), 1)`,
+                pointerEvents: "none",
+                ...style,
+            }}
+        />
+    )
+    const speaker = (x, n, key) =>
+        onSide(x, n * 4.6, 2.6, { background: "radial-gradient(circle, #0d0d0e 0 1.05px, rgba(13,13,14,0) 1.45px) 0 50% / 4.6px 100% repeat-x" }, key)
+    const usbC = (x) =>
+        onSide(x, 30, 3.4, { borderRadius: 2, background: "linear-gradient(#050506, #1a1a1d)", boxShadow: `0 0 0 .7px ${mixHex(F[1], F[3], 0.7)}, inset 0 .5px .5px rgba(255,255,255,.14)` }, "usb")
+    const mic = (x, key) => onSide(x, 2.2, 2.2, { borderRadius: "50%", background: "#0d0d0e" }, key)
+    // main half: USB-C in the middle, the loudspeaker to one side, a microphone to the other.
+    // The other half has its second speaker (stereo). The Flip's other half has its hinge below.
+    const sideDetailsR = [usbC("50%"), speaker("76%", 6, "spk"), mic("24%", "mic")]
+    const sideDetailsL = land ? [speaker("30%", 6, "spk2"), mic("70%", "mic2")] : null
     const bodySide = (
         <>
-            <div ref={R.plateL} aria-hidden style={{ ...leafBox, borderRadius: cLeaf, background: F[1], boxShadow: sideShadow, transition: "opacity .25s ease", pointerEvents: "none" }} />
-            <div ref={R.plateR} aria-hidden style={{ ...rightBox, borderRadius: cRight, background: F[1], boxShadow: sideShadow, pointerEvents: "none" }} />
+            <div ref={R.plateL} aria-hidden style={{ ...leafBox, borderRadius: cLeaf, background: F[1], boxShadow: sideShadow, transition: "opacity .25s ease", pointerEvents: "none" }}>
+                {sideDetailsL}
+            </div>
+            <div ref={R.plateR} aria-hidden style={{ ...rightBox, borderRadius: cRight, background: F[1], boxShadow: sideShadow, pointerEvents: "none" }}>
+                {sideDetailsR}
+            </div>
         </>
     )
 
@@ -1504,6 +1669,7 @@ export default function FoldPhoneDevice(props) {
                 </div>
             )}
             {sheen()}
+            {glare()}
         </>
     )
 
@@ -1536,10 +1702,12 @@ export default function FoldPhoneDevice(props) {
                         {land && innerCam("udc") /* [Z8] Fold 8 under-display camera */}
                         {crease(land ? "right" : "bottom")}
                         {sheen("R")}
+                        {glare("R")}
                     </>,
                     [R.rBody, R.rGlass, R.rScreen],
                     <>
                         {sideButtons}
+                        {hingeCaps /* [Z8] at this half's hinge edge: hidden with it when the phone is closed */}
                         <div
                             ref={R.shR}
                             style={{
@@ -1566,6 +1734,7 @@ export default function FoldPhoneDevice(props) {
                         {statusBar(land ? "left" : "all")}
                         {crease(land ? "left" : "top")}
                         {sheen("L")}
+                        {glare("L")}
                     </>,
                     undefined,
                     <div
@@ -1595,6 +1764,7 @@ export default function FoldPhoneDevice(props) {
                         boxShadow: slabShadow,
                     }}
                 />
+                {rimBands(hingeOfRight)}
                 <div
                     style={{
                         ...abs,
@@ -1603,6 +1773,26 @@ export default function FoldPhoneDevice(props) {
                         background: "#050505",
                     }}
                 />
+                {glassBevel(cAll, null)}
+                {/* [Z8] Fold cover: the earpiece, a fine slit in the glass border above the camera */}
+                {land && (
+                    <div
+                        aria-hidden
+                        style={{
+                            ...abs,
+                            top: G.f + (G.bz - 2) / 2,
+                            left: "50%",
+                            width: 58,
+                            marginLeft: -29,
+                            height: 2,
+                            borderRadius: 1,
+                            background: "#1b1b1e",
+                            boxShadow: "inset 0 .5px 0 rgba(255,255,255,.1), 0 .5px 0 rgba(255,255,255,.05)",
+                            pointerEvents: "none",
+                            zIndex: 1,
+                        }}
+                    />
+                )}
                 <div
                     style={{
                         ...abs,
