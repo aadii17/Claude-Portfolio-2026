@@ -90,12 +90,12 @@ export const QA = [
   },
   {
     q: 'Where can I see more of his work?',
-    a: `On Behance (${SITE.behance}) and Instagram (${SITE.instagram}).`,
+    a: `On Behance (${SITE.behance}), Instagram (${SITE.instagram}) and LinkedIn (${SITE.linkedin}).`,
     keywords: ['behance', 'instagram', 'social', 'more', 'see', 'link', 'links', 'profile', 'dribbble', 'linkedin'],
   },
   {
     q: 'Can I see his resume?',
-    a: `Email him at ${SITE.email} and he will send his CV.`,
+    a: `His full experience is on LinkedIn (${SITE.linkedin}), or email him at ${SITE.email} and he will send his CV.`,
     keywords: ['resume', 'cv', 'download'],
   },
   {

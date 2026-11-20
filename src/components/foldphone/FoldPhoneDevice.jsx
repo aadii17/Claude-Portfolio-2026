@@ -400,6 +400,14 @@ export default function FoldPhoneDevice(props) {
         const kChanged = L.k !== k
         L.k = k
         L.pe = pe
+        // tell the screen's content how far it's scrolled (screen px), for scroll-linked effects
+        // inside it (the content moves by transform, so it can't use real scroll events or sticky)
+        // (its own field: L.inner is the content's own "moved?" check further down)
+        if (L.told !== inner) {
+            L.told = inner
+            window.__ffInner = inner
+            window.dispatchEvent(new CustomEvent("ff:inner", { detail: inner }))
+        }
 
         // ---- device (only when the fold state or the idle float changes)
         if (kChanged || fl) {

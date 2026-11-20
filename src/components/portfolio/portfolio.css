@@ -85,8 +85,11 @@
    White, the big title top-left, the questions as soft grey rows on the right; under them the
    "ask AI" box. Phones: one column. */
 .pf-faq {
-  display: grid; grid-template-columns: minmax(0, 1fr) 470px; gap: 40px; align-items: start; align-content: start;
-  padding: 88px 30px 104px; background: #fff !important; color: #000; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, 1fr) 490px; gap: 40px; align-items: center;
+  /* the content sits in the middle of the screen (safe: if an open answer makes it taller than the
+     screen, it keeps its top instead of being cut off above) */
+  align-content: safe center;
+  padding: 72px 30px 96px; background: #fff !important; color: #000; overflow: hidden;
   font-family: 'Zalando Sans Variable', 'Zalando Sans', var(--font);
 }
 .pf-faq-head { display: flex; flex-direction: column; gap: 22px; }
@@ -94,12 +97,12 @@
   margin: 0; font: 500 112px/.95 'Mona Sans Variable', 'Mona Sans', var(--font); letter-spacing: -.035em;
 }
 .pf-faq-intro { max-width: 300px; font-size: 17px; line-height: 1.55; color: rgb(0 0 0 / .6); }
-.pf-faq-list { display: flex; flex-direction: column; gap: 10px; }
+.pf-faq-list { display: flex; flex-direction: column; gap: 12px; }
 .pf-faq-item { border-radius: 14px; background: #f6f6f6; transition: background-color .2s ease; }
 .pf-faq-q {
   display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%;
-  padding: 20px 22px; border: 0; background: none; color: inherit; text-align: left; cursor: pointer;
-  font: 400 17px/1.35 'Zalando Sans Variable', 'Zalando Sans', var(--font);
+  padding: 24px; border: 0; background: none; color: inherit; text-align: left; cursor: pointer;
+  font: 400 18px/1.35 'Zalando Sans Variable', 'Zalando Sans', var(--font);
 }
 .pf-faq-q:focus-visible { outline: 2px solid #000; outline-offset: -2px; border-radius: 14px; }
 .pf-faq-icon { flex: none; color: rgb(0 0 0 / .45); transition: rotate .35s cubic-bezier(.2, .8, .2, 1); }
@@ -155,6 +158,99 @@
   .pf-faq-a, .pf-faq-a-inner, .pf-faq-icon { transition: none !important; }
 }
 
+/* ---------- Work: Selected Projects (after the AXIS template) ----------
+   A tall section (one screen per step) whose stage stays pinned while it plays: Work.jsx moves it.
+   The big words use Mona Sans at its condensed width, like the template's Antonio. */
+.pf-proj {
+  position: relative; padding: 0; overflow: hidden;
+  height: calc(var(--screen-h) * var(--steps)); background: #f6f6f6 !important; color: #000;
+  --cond: 'Mona Sans Variable', 'Mona Sans', var(--font);
+}
+.pf-proj-stage { position: absolute; left: 0; right: 0; top: 0; height: var(--screen-h); overflow: hidden; will-change: transform; }
+.pf-proj-title {
+  position: absolute; inset: 0; margin: 0; display: flex; align-items: center; justify-content: center; gap: .12em;
+  font: 600 168px/.9 var(--cond); font-stretch: 75%; letter-spacing: -.03em; text-transform: uppercase; white-space: nowrap;
+}
+.pf-proj-title span { display: block; will-change: transform; }
+.pf-proj-card {
+  position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between;
+  padding: 64px 34px 104px; background: var(--tint); color: #000; overflow: hidden;
+  transform-origin: 50% 50%; will-change: transform, opacity; visibility: hidden;
+}
+/* the project's mark, huge and faint, where the template has the project photo */
+.pf-proj-mark {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%; pointer-events: none;
+  font: 700 380px/1 var(--cond); font-stretch: 75%; letter-spacing: -.04em; color: rgb(0 0 0 / .07); white-space: nowrap;
+}
+.pf-proj-top, .pf-proj-bottom { position: relative; display: flex; justify-content: space-between; gap: 24px; }
+.pf-proj-top { align-items: flex-start; }
+.pf-proj-bottom { align-items: flex-end; }
+.pf-proj-tags { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font: 500 13px/1.1 var(--cond); font-stretch: 80%; text-transform: uppercase; letter-spacing: .02em; }
+.pf-proj-year { font: 600 64px/.9 var(--cond); font-stretch: 75%; color: rgb(0 0 0 / .4); }
+.pf-proj-name { flex: 0 1 auto; margin: 0; max-width: 60%; font: 600 64px/.92 var(--cond); font-stretch: 75%; letter-spacing: -.02em; text-transform: uppercase; text-wrap: balance; }
+.pf-proj-sum { flex: 1; max-width: 300px; font: 400 15px/1.5 'Zalando Sans Variable', 'Zalando Sans', var(--font); color: rgb(0 0 0 / .7); }
+.pf-proj-arrow { flex: none; display: grid; place-items: center; }
+.pf-flip .pf-proj-title { flex-direction: column; gap: 0; font-size: 92px; }
+.pf-flip .pf-proj-card { padding: 60px 18px 100px; }
+.pf-flip .pf-proj-mark { font-size: 200px; }
+.pf-flip .pf-proj-year { font-size: 40px; }
+.pf-flip .pf-proj-bottom { flex-wrap: wrap; gap: 10px 16px; }
+.pf-flip .pf-proj-name { max-width: none; flex-basis: 100%; font-size: 44px; }
+.pf-flip .pf-proj-sum { font-size: 13.5px; }
+
+/* ---------- Services (after the AXIS template) ----------
+   Dark. Fold: a headline panel and one card per service in a row that slides sideways as you
+   scroll (the section is as tall as that distance; Work.jsx sets it). Flip: simply stacked. */
+.pf-svc {
+  position: relative; padding: 0; overflow: hidden; height: auto; min-height: var(--screen-h);
+  background: #0f0f0f !important; color: #dbdbd7;
+  --cond: 'Mona Sans Variable', 'Mona Sans', var(--font);
+}
+.pf-svc-stage { position: relative; height: var(--screen-h); overflow: hidden; will-change: transform; }
+.pf-svc-track { display: flex; height: 100%; width: max-content; will-change: transform; }
+.pf-svc-head {
+  flex: none; width: 640px; height: 100%; display: flex; flex-direction: column; justify-content: space-between;
+  padding: 72px 40px 108px 34px;
+}
+.pf-svc-label { display: flex; align-items: center; gap: 8px; font: 500 14px/1 var(--cond); font-stretch: 80%; text-transform: uppercase; letter-spacing: .04em; }
+.pf-svc-tick { width: 3px; height: 14px; background: currentColor; }
+.pf-svc-title { margin: 0; font: 600 150px/.88 var(--cond); font-stretch: 75%; letter-spacing: -.03em; text-transform: uppercase; color: #f2f2ee; }
+.pf-svc-card { flex: none; width: 900px; height: 100%; display: flex; }
+.pf-svc-visual {
+  flex: none; width: 300px; position: relative; overflow: hidden; background: var(--tint); color: #000;
+  display: flex; align-items: flex-end; justify-content: flex-start; padding: 0 0 96px 24px;
+}
+.pf-svc-visual span { font: 700 220px/.8 var(--cond); font-stretch: 75%; letter-spacing: -.04em; color: rgb(0 0 0 / .85); }
+.pf-svc-body {
+  flex: 1; position: relative; display: flex; flex-direction: column; padding: 76px 48px 108px 56px;
+  background: #171717; border-left: 1px solid rgb(255 255 255 / .06);
+}
+.pf-svc-tags { list-style: none; margin: 0 0 auto; padding: 0; display: flex; flex-wrap: wrap; gap: 2px; justify-content: flex-end; order: -1; }
+.pf-svc-tags li { padding: 6px 10px; background: #dbdbd7; color: #0f0f0f; font: 600 12px/1 var(--cond); font-stretch: 80%; text-transform: uppercase; letter-spacing: .03em; }
+.pf-svc-name { margin: 0; font: 600 76px/.95 var(--cond); font-stretch: 75%; letter-spacing: -.03em; text-transform: uppercase; color: #f2f2ee; }
+.pf-svc-rule { display: block; width: 80px; height: 5px; margin: 24px 0 28px; background: #dbdbd7; }
+.pf-svc-text { max-width: 440px; font: 400 18px/1.55 'Zalando Sans Variable', 'Zalando Sans', var(--font); color: rgb(219 219 215 / .72); }
+.pf-svc-cta {
+  align-self: flex-start; margin-top: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px 12px 20px; border-radius: 999px;
+  background: #f2f2ee; color: #0f0f0f; text-decoration: none; font: 600 15px/1 'Zalando Sans Variable', 'Zalando Sans', var(--font);
+}
+.pf-svc-cta svg { width: 18px; height: 18px; }
+.pf-svc-cta:focus-visible { outline: 2px solid #f2f2ee; outline-offset: 3px; }
+/* the Flip: stacked, no sideways scroll */
+.pf-flip .pf-svc-stage { height: auto; }
+.pf-flip .pf-svc-track { flex-direction: column; width: auto; height: auto; padding-bottom: 96px; }
+.pf-flip .pf-svc-head { width: auto; height: auto; gap: 18px; padding: 64px 18px 28px; }
+.pf-flip .pf-svc-title { font-size: 72px; }
+.pf-flip .pf-svc-card { width: auto; height: auto; flex-direction: column; }
+.pf-flip .pf-svc-visual { width: auto; height: 150px; padding: 0 0 16px 18px; }
+.pf-flip .pf-svc-visual span { font-size: 120px; }
+.pf-flip .pf-svc-body { padding: 22px 18px 34px; border-left: 0; }
+.pf-flip .pf-svc-tags { justify-content: flex-start; margin: 0 0 18px; }
+.pf-flip .pf-svc-name { font-size: 44px; }
+.pf-flip .pf-svc-rule { margin: 16px 0 18px; }
+.pf-flip .pf-svc-text { font-size: 15px; }
+.pf-flip .pf-svc-cta { margin-top: 22px; }
+
 /* ---------- floating nav pill (FoldPhone's nav slot, on top of the open screen) ---------- */
 .pf-nav {
   display: flex; gap: 2px; padding: 4px; border-radius: 999px;
@@ -164,6 +260,11 @@
 }
 .pf-nav button { padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: #17171a; font: inherit; cursor: pointer; transition: background-color 160ms ease, color 160ms ease; }
 .pf-nav button[aria-current='true'] { background: #17171a; color: #fff; }
+/* phones (the Flip's 358px screen): six sections have to fit across */
+@media (max-width: 809.98px) {
+  .pf-nav { font-size: 12px; }
+  .pf-nav button { padding: 8px 8.5px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .pf-nav button { transition: none !important; }

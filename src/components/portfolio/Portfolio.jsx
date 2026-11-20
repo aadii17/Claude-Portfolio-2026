@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import '@fontsource-variable/mona-sans'
+import '@fontsource-variable/mona-sans/standard.css' // weight + width axes (Work and Services use the condensed width)
 import '@fontsource-variable/zalando-sans'
 import { goTo, store, usePortfolio } from './store'
 import { FAQ } from './content'
 import { answer } from './answer'
+import { Projects, Services } from './Work'
 import { SITE } from '../site/site'
 import './portfolio.css'
 
@@ -15,8 +16,9 @@ import './portfolio.css'
 
 const SECTIONS = [
   { id: 'home', label: 'Home' },
-  { id: 'projects', label: 'Work' },
   { id: 'about', label: 'About' },
+  { id: 'projects', label: 'Work' },
+  { id: 'services', label: 'Services' },
   { id: 'faq', label: 'FAQ' },
   { id: 'contact', label: 'Contact' },
 ]
@@ -54,6 +56,16 @@ const SOCIALS = [
         <circle cx="12" cy="12" r="4" />
         <circle cx="17.3" cy="6.7" r=".6" fill="currentColor" stroke="none" />
       </g>
+    ),
+  },
+  {
+    label: 'LinkedIn',
+    href: SITE.linkedin,
+    icon: (
+      <path
+        fill="currentColor"
+        d="M4.98 3.5a2.48 2.48 0 1 1 0 4.96 2.48 2.48 0 0 1 0-4.96ZM2.86 9.82h4.25V21H2.86V9.82Zm6.9 0h4.07v1.53h.06c.57-1.07 1.95-2.2 4.02-2.2 4.3 0 5.09 2.83 5.09 6.5V21h-4.24v-4.9c0-1.17-.02-2.68-1.63-2.68-1.64 0-1.89 1.28-1.89 2.6V21H9.76V9.82Z"
+      />
     ),
   },
 ]
@@ -363,6 +375,10 @@ export default function Portfolio({ variant }) {
       {SECTIONS.map((s, i) =>
         s.id === 'home' ? (
           <Hero key={s.id} variant={variant} />
+        ) : s.id === 'projects' ? (
+          <Projects key={s.id} />
+        ) : s.id === 'services' ? (
+          <Services key={s.id} variant={variant} />
         ) : s.id === 'faq' ? (
           <Faq key={s.id} />
         ) : (

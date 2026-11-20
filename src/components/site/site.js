@@ -8,6 +8,7 @@ export const SITE = {
   // lock-screen buttons: Behance bottom-left, Instagram bottom-right. Put your profile URLs here.
   behance: 'https://www.behance.net/aadi17',
   instagram: 'https://www.instagram.com/aadi._17',
+  linkedin: 'https://www.linkedin.com/in/aadarsh-choudhari/',
 }
 
 // Lock-screen notifications (tapping one unfolds the phone). The phone (Flip) shows only the first.

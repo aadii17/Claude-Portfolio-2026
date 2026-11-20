@@ -87,6 +87,30 @@ export const PROJECTS = [
   },
 ]
 
+// The Services section (after the AXIS template): one full-height card per service.
+// DRAFT: my wording from your resume; edit freely. `tags` are the small chips (up to 4 fit).
+export const SERVICES = {
+  label: 'Services',
+  title: 'End to end design',
+  items: [
+    {
+      title: 'Web Design',
+      text: 'Websites and landing pages that are clear, fast and easy to keep up to date, designed in Figma and built in Framer.',
+      tags: ['Websites', 'Landing pages', 'Framer', 'Responsive'],
+    },
+    {
+      title: 'UI/UX Design',
+      text: 'Interfaces for web and mobile products, from user flows and wireframes to polished UI and clickable prototypes.',
+      tags: ['User flows', 'Wireframes', 'Prototypes', 'UI design'],
+    },
+    {
+      title: 'Product Design',
+      text: 'End-to-end design for complex tools like EV platforms, dashboards and SaaS, with the design system that keeps them consistent.',
+      tags: ['Dashboards', 'SaaS', 'Design systems', 'Research'],
+    },
+  ],
+}
+
 /* The FAQ section ("Small talk"). Each answer is one or more paragraphs.
  * DRAFT: the answers are my wording from your resume; rewrite them in your own voice.
  * The last question (getting in touch) is built from SITE: your email and phone. */
@@ -129,5 +153,5 @@ export const FAQ = {
 export const SOCIALS = [
   { label: 'Behance', href: SITE.behance },
   { label: 'Instagram', href: SITE.instagram },
-  // add LinkedIn / Medium / Figma profile URLs here (they are on your resume)
+  { label: 'LinkedIn', href: SITE.linkedin },
 ]
