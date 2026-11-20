@@ -326,6 +326,7 @@ export default function FoldPhoneDevice(props) {
         wA: useRef(null),
         plateL: useRef(null), // [Z8]
         plateR: useRef(null), // [Z8]
+        caps: useRef(null), // [Z8] hinge end caps
     }
 
     const geo = useRef(null)
@@ -427,6 +428,9 @@ export default function FoldPhoneDevice(props) {
                     : `perspective(${PP}px) ${P ? `rotateX(${(-th).toFixed(3)}deg)` : `rotateY(${th.toFixed(3)}deg)`}`
             )
             S(cover, "visibility", front ? "hidden" : "visible")
+            // [Z8] hinge caps only once the left half has swung past upright: before that the cover
+            // still lies over the right half and they'd stick out of the spine as little tabs
+            S(R.caps.current, "visibility", front ? "inherit" : "hidden")
             S(
                 cover,
                 "transform",
@@ -1707,7 +1711,8 @@ export default function FoldPhoneDevice(props) {
                     [R.rBody, R.rGlass, R.rScreen],
                     <>
                         {sideButtons}
-                        {hingeCaps /* [Z8] at this half's hinge edge: hidden with it when the phone is closed */}
+                        {/* [Z8] at this half's hinge edge; shown by the loop only while the left half faces us */}
+                        <div ref={R.caps} style={{ visibility: "hidden" }}>{hingeCaps}</div>
                         <div
                             ref={R.shR}
                             style={{
