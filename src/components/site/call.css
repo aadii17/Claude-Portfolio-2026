@@ -52,7 +52,7 @@
 .call-slide:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .call-mail {
   padding-top: 8px; color: #fff; text-decoration: none;
-  font: 500 11px/1.2 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .06em; text-transform: uppercase;
+  font: 500 11px/1.2 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .02em; /* lowercase, as typed */
 }
 
 /* the Flip's FlexWindow: short and wide */
