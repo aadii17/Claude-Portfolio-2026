@@ -156,11 +156,15 @@ export function Services({ variant }) {
       <div ref={stage} className="pf-svc-stage">
         <div ref={track} className="pf-svc-track">
           <div className="pf-svc-head">
-            <p className="pf-svc-label">
-              <span className="pf-svc-tick" aria-hidden />
+            <p className="pf-label">
+              <span className="pf-bars" aria-hidden>
+                <i className="on" />
+                <i className="on" />
+                <i className="on" />
+              </span>
               {SERVICES.label}
             </p>
-            <h2 className="pf-svc-title">{SERVICES.title}</h2>
+            <h2 className="pf-title">{SERVICES.title}</h2>
           </div>
           {SERVICES.items.map((s, i) => (
             <article key={s.title} className="pf-svc-card">

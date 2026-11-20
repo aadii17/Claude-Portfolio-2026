@@ -2,16 +2,21 @@
  * Sizes by variant, not media queries: .pf-fold = the Fold's 976 x 916 screen, .pf-flip = the Flip's 358 x 823.
  * Each section is exactly one screen tall. */
 
+/* the theme, from the hero: light grey, black ink, Mona Sans headings (condensed + uppercase for
+   section titles), Zalando Sans for everything else, three-bar labels */
 .pf {
-  --bg: #f4f3ef;
-  --ink: #17171a;
-  --muted: #8a8a92;
-  --line: #cfccc2;
+  --bg: #f6f6f6;
+  --ink: #000;
+  --muted: rgb(0 0 0 / .5);
+  --line: rgb(0 0 0 / .12);
+  --card: #fff;
+  --head: 'Mona Sans Variable', 'Mona Sans', var(--font);
+  --body: 'Zalando Sans Variable', 'Zalando Sans', var(--font);
   --screen-h: 916px;
   --pad: 40px;
   position: relative; box-sizing: border-box;
   background: var(--bg); color: var(--ink);
-  font-family: var(--font); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased;
+  font-family: var(--body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased;
 }
 .pf *, .pf *::before, .pf *::after { box-sizing: border-box; }
 .pf-fold { width: 976px; }
@@ -20,17 +25,21 @@
 
 /* one section = one screen; room at the top for the status bar, at the bottom for the nav pill */
 .pf-section { height: var(--screen-h); padding: 56px var(--pad) 88px; }
-.pf-section:nth-child(even) { background: #ebe9e2; }
+.pf-section { background: var(--bg); }
 
-.pf-ph {
-  height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-  border: 1.5px dashed var(--line); border-radius: 24px; text-align: center;
-}
-.pf-flip .pf-ph { border-radius: 18px; }
-.pf-ph-n { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; color: var(--muted); font-variant-numeric: tabular-nums; }
-.pf-ph-title { margin: 0; font-size: 56px; line-height: 1.05; font-weight: 650; letter-spacing: -0.03em; }
-.pf-flip .pf-ph-title { font-size: 40px; }
-.pf-ph-note { font-size: 14px; color: var(--muted); }
+/* the section label every section starts with: three little bars + a word (as in the hero) */
+.pf-label { display: flex; align-items: center; gap: 8px; margin: 0; font: 500 14px/1 var(--body); color: var(--ink); }
+.pf-label .pf-bars { color: var(--ink); }
+.pf-flip .pf-label { font-size: 13px; }
+/* section titles: Mona Sans, condensed, uppercase */
+.pf-title { margin: 0; font: 600 150px/.88 var(--head); font-stretch: 75%; letter-spacing: -.03em; text-transform: uppercase; color: var(--ink); }
+.pf-flip .pf-title { font-size: 72px; }
+
+/* a section that isn't built yet: its label, its name big, and a quiet note */
+.pf-ph { height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 16px 0 8px; }
+.pf-ph-bottom { display: flex; flex-direction: column; gap: 18px; }
+.pf-ph-note { font-size: 16px; color: var(--muted); }
+.pf-flip .pf-ph-note { font-size: 14px; }
 
 /* ---------- Home: the hero (after the Nikola template) ----------
    Light grey, the name huge across the screen and scrolling, the portrait standing in front of it
@@ -89,16 +98,13 @@
   /* the content sits in the middle of the screen (safe: if an open answer makes it taller than the
      screen, it keeps its top instead of being cut off above) */
   align-content: safe center;
-  padding: 72px 30px 96px; background: #fff !important; color: #000; overflow: hidden;
-  font-family: 'Zalando Sans Variable', 'Zalando Sans', var(--font);
+  padding: 72px 30px 96px; color: var(--ink); overflow: hidden;
 }
 .pf-faq-head { display: flex; flex-direction: column; gap: 22px; }
-.pf-faq-title {
-  margin: 0; font: 500 112px/.95 'Mona Sans Variable', 'Mona Sans', var(--font); letter-spacing: -.035em;
-}
+.pf-faq-head .pf-title { font-size: 140px; }
 .pf-faq-intro { max-width: 300px; font-size: 17px; line-height: 1.55; color: rgb(0 0 0 / .6); }
 .pf-faq-list { display: flex; flex-direction: column; gap: 12px; }
-.pf-faq-item { border-radius: 14px; background: #f6f6f6; transition: background-color .2s ease; }
+.pf-faq-item { border-radius: 14px; background: var(--card); transition: background-color .2s ease; }
 .pf-faq-q {
   display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%;
   padding: 24px; border: 0; background: none; color: inherit; text-align: left; cursor: pointer;
@@ -107,7 +113,7 @@
 .pf-faq-q:focus-visible { outline: 2px solid #000; outline-offset: -2px; border-radius: 14px; }
 .pf-faq-icon { flex: none; color: rgb(0 0 0 / .45); transition: rotate .35s cubic-bezier(.2, .8, .2, 1); }
 .pf-faq-item.is-open .pf-faq-icon { rotate: 45deg; }
-@media (hover: hover) and (pointer: fine) { .pf-faq-item:not(.is-open):hover { background: #efefef; } }
+@media (hover: hover) and (pointer: fine) { .pf-faq-item:not(.is-open):hover { background: #fbfbfb; box-shadow: inset 0 0 0 1px var(--line); } }
 /* the answer opens to its own height */
 .pf-faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s cubic-bezier(.2, .8, .2, 1); }
 .pf-faq-item.is-open .pf-faq-a { grid-template-rows: 1fr; }
@@ -127,7 +133,7 @@
 .pf-ai-error { color: rgb(170 40 30); }
 /* the input */
 .pf-faq-ask {
-  display: flex; align-items: center; gap: 14px; padding: 12px 12px 12px 22px; border-radius: 14px; background: #f6f6f6;
+  display: flex; align-items: center; gap: 14px; padding: 12px 12px 12px 22px; border-radius: 14px; background: var(--card);
 }
 .pf-faq-fav { flex: none; display: block; color: #000; }
 .pf-faq-ask input {
@@ -143,7 +149,7 @@
 .pf-faq-ask:focus-within { box-shadow: inset 0 0 0 1.5px rgb(0 0 0 / .14); }
 .pf-flip .pf-faq { grid-template-columns: 1fr; gap: 24px; padding: 64px 18px 92px; }
 .pf-flip .pf-faq-head { gap: 12px; }
-.pf-flip .pf-faq-title { font-size: 58px; }
+.pf-flip .pf-faq-head .pf-title { font-size: 72px; }
 .pf-flip .pf-faq-intro { font-size: 14px; }
 .pf-flip .pf-faq-list { gap: 8px; }
 .pf-flip .pf-faq-q { padding: 15px 16px; font-size: 15px; }
@@ -199,52 +205,47 @@
 .pf-flip .pf-proj-sum { font-size: 13.5px; }
 
 /* ---------- Services (after the AXIS template) ----------
-   Dark. Fold: a headline panel and one card per service in a row that slides sideways as you
+   Fold: a headline panel and one card per service in a row that slides sideways as you
    scroll (the section is as tall as that distance; Work.jsx sets it). Flip: simply stacked. */
 .pf-svc {
   position: relative; padding: 0; overflow: hidden; height: auto; min-height: var(--screen-h);
-  background: #0f0f0f !important; color: #dbdbd7;
-  --cond: 'Mona Sans Variable', 'Mona Sans', var(--font);
+  color: var(--ink);
+  --cond: var(--head);
 }
 .pf-svc-stage { position: relative; height: var(--screen-h); overflow: hidden; will-change: transform; }
 .pf-svc-track { display: flex; height: 100%; width: max-content; will-change: transform; }
 .pf-svc-head {
   flex: none; width: 640px; height: 100%; display: flex; flex-direction: column; justify-content: space-between;
-  padding: 72px 40px 108px 34px;
+  padding: 8px 40px 8px 34px; /* (the track adds the top and bottom room) */
 }
-.pf-svc-label { display: flex; align-items: center; gap: 8px; font: 500 14px/1 var(--cond); font-stretch: 80%; text-transform: uppercase; letter-spacing: .04em; }
-.pf-svc-tick { width: 3px; height: 14px; background: currentColor; }
-.pf-svc-title { margin: 0; font: 600 150px/.88 var(--cond); font-stretch: 75%; letter-spacing: -.03em; text-transform: uppercase; color: #f2f2ee; }
-.pf-svc-card { flex: none; width: 900px; height: 100%; display: flex; }
+/* each service: a pastel panel with its number, then a white card body (rounded, like the FAQ rows) */
+.pf-svc-track { gap: 12px; padding: 64px 34px 100px 0; }
+.pf-svc-card { flex: none; width: 880px; height: 100%; display: flex; border-radius: 18px; overflow: hidden; background: var(--card); }
 .pf-svc-visual {
-  flex: none; width: 300px; position: relative; overflow: hidden; background: var(--tint); color: #000;
-  display: flex; align-items: flex-end; justify-content: flex-start; padding: 0 0 96px 24px;
+  flex: none; width: 280px; position: relative; overflow: hidden; background: var(--tint); color: var(--ink);
+  display: flex; align-items: flex-end; justify-content: flex-start; padding: 0 0 28px 24px;
 }
 .pf-svc-visual span { font: 700 220px/.8 var(--cond); font-stretch: 75%; letter-spacing: -.04em; color: rgb(0 0 0 / .85); }
-.pf-svc-body {
-  flex: 1; position: relative; display: flex; flex-direction: column; padding: 76px 48px 108px 56px;
-  background: #171717; border-left: 1px solid rgb(255 255 255 / .06);
-}
-.pf-svc-tags { list-style: none; margin: 0 0 auto; padding: 0; display: flex; flex-wrap: wrap; gap: 2px; justify-content: flex-end; order: -1; }
-.pf-svc-tags li { padding: 6px 10px; background: #dbdbd7; color: #0f0f0f; font: 600 12px/1 var(--cond); font-stretch: 80%; text-transform: uppercase; letter-spacing: .03em; }
-.pf-svc-name { margin: 0; font: 600 76px/.95 var(--cond); font-stretch: 75%; letter-spacing: -.03em; text-transform: uppercase; color: #f2f2ee; }
-.pf-svc-rule { display: block; width: 80px; height: 5px; margin: 24px 0 28px; background: #dbdbd7; }
-.pf-svc-text { max-width: 440px; font: 400 18px/1.55 'Zalando Sans Variable', 'Zalando Sans', var(--font); color: rgb(219 219 215 / .72); }
+.pf-svc-body { flex: 1; position: relative; display: flex; flex-direction: column; padding: 36px 40px 40px 44px; }
+.pf-svc-tags { list-style: none; margin: 0 0 auto; padding: 0; display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; order: -1; }
+.pf-svc-tags li { padding: 7px 11px; border-radius: 999px; background: var(--bg); color: var(--ink); font: 500 12px/1 var(--body); }
+.pf-svc-name { margin: 0; font: 600 76px/.95 var(--cond); font-stretch: 75%; letter-spacing: -.03em; text-transform: uppercase; color: var(--ink); }
+.pf-svc-rule { display: block; width: 80px; height: 5px; margin: 24px 0 28px; background: var(--ink); }
+.pf-svc-text { max-width: 440px; font: 400 18px/1.55 var(--body); color: rgb(0 0 0 / .62); }
 .pf-svc-cta {
   align-self: flex-start; margin-top: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px 12px 20px; border-radius: 999px;
-  background: #f2f2ee; color: #0f0f0f; text-decoration: none; font: 600 15px/1 'Zalando Sans Variable', 'Zalando Sans', var(--font);
+  background: var(--ink); color: #fff; text-decoration: none; font: 500 15px/1 var(--body);
 }
 .pf-svc-cta svg { width: 18px; height: 18px; }
-.pf-svc-cta:focus-visible { outline: 2px solid #f2f2ee; outline-offset: 3px; }
+.pf-svc-cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 /* the Flip: stacked, no sideways scroll */
 .pf-flip .pf-svc-stage { height: auto; }
-.pf-flip .pf-svc-track { flex-direction: column; width: auto; height: auto; padding-bottom: 96px; }
-.pf-flip .pf-svc-head { width: auto; height: auto; gap: 18px; padding: 64px 18px 28px; }
-.pf-flip .pf-svc-title { font-size: 72px; }
-.pf-flip .pf-svc-card { width: auto; height: auto; flex-direction: column; }
-.pf-flip .pf-svc-visual { width: auto; height: 150px; padding: 0 0 16px 18px; }
+.pf-flip .pf-svc-track { flex-direction: column; width: auto; height: auto; gap: 12px; padding: 0 18px 100px; }
+.pf-flip .pf-svc-head { width: auto; height: auto; gap: 18px; padding: 64px 0 16px; }
+.pf-flip .pf-svc-card { width: auto; height: auto; flex-direction: column; border-radius: 14px; }
+.pf-flip .pf-svc-visual { width: auto; height: 140px; padding: 0 0 14px 16px; }
 .pf-flip .pf-svc-visual span { font-size: 120px; }
-.pf-flip .pf-svc-body { padding: 22px 18px 34px; border-left: 0; }
+.pf-flip .pf-svc-body { padding: 20px 16px 22px; }
 .pf-flip .pf-svc-tags { justify-content: flex-start; margin: 0 0 18px; }
 .pf-flip .pf-svc-name { font-size: 44px; }
 .pf-flip .pf-svc-rule { margin: 16px 0 18px; }
@@ -256,7 +257,7 @@
   display: flex; gap: 2px; padding: 4px; border-radius: 999px;
   background: rgb(255 255 255 / .9); box-shadow: 0 10px 30px -12px rgb(23 23 26 / .3), inset 0 0 0 1px rgb(23 23 26 / .06);
   -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  font: 500 13px/1 var(--font);
+  font: 500 13px/1 'Zalando Sans Variable', 'Zalando Sans', var(--font);
 }
 .pf-nav button { padding: 9px 14px; border: 0; border-radius: 999px; background: transparent; color: #17171a; font: inherit; cursor: pointer; transition: background-color 160ms ease, color 160ms ease; }
 .pf-nav button[aria-current='true'] { background: #17171a; color: #fff; }

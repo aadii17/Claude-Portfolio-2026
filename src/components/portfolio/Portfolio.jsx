@@ -305,7 +305,8 @@ function Faq() {
   return (
     <section className="pf-section pf-faq" data-pf="faq" aria-label="FAQ">
       <div className="pf-faq-head">
-        <h2 className="pf-faq-title">{FAQ.title}</h2>
+        <SectionLabel>FAQ</SectionLabel>
+        <h2 className="pf-title">{FAQ.title}</h2>
         <p className="pf-faq-intro">{FAQ.intro}</p>
       </div>
       <div className="pf-faq-list">
@@ -341,15 +342,32 @@ function Faq() {
   )
 }
 
+// the label every section starts with: three bars and a word, as in the hero's services list
+function SectionLabel({ children }) {
+  return (
+    <p className="pf-label">
+      <span className="pf-bars" aria-hidden>
+        <i className="on" />
+        <i className="on" />
+        <i className="on" />
+      </span>
+      {children}
+    </p>
+  )
+}
+
+// a section that isn't built yet, in the same look as the rest: label top-left, its name big at the bottom
 function Placeholder({ id, label, n }) {
   return (
     <section className="pf-section" data-pf={id} aria-label={label}>
       <div className="pf-ph">
-        <span className="pf-ph-n">
+        <SectionLabel>
           {String(n).padStart(2, '0')} / {String(SECTIONS.length).padStart(2, '0')}
-        </span>
-        <h2 className="pf-ph-title">{label}</h2>
-        <p className="pf-ph-note">Section placeholder</p>
+        </SectionLabel>
+        <div className="pf-ph-bottom">
+          <h2 className="pf-title">{label}</h2>
+          <p className="pf-ph-note">Coming soon.</p>
+        </div>
       </div>
     </section>
   )
