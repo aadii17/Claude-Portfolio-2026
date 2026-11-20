@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { deviceFrame } from '../foldfolio/FoldfolioDevice'
+import { deviceFrame } from '../foldphone/FoldPhoneDevice'
 import IPodPlayer from './IPodPlayer'
+import { isSiteReady, onSiteReady } from '../site/ready'
 
-/* The iPod lying on the desk mat, in Foldfolio's backdrop slot (under the phone).
+/* The iPod lying on the desk mat, in FoldPhone's backdrop slot (under the phone).
  * It lands somewhere random on every visit, never on the phone or the space the phone takes up
  * when it unfolds, nor on the finish switcher or the cat's corner. On tighter screens it shrinks a
  * little; when there is no room at all it stays off the mat. Drag it by its body to move it. */
@@ -62,20 +63,22 @@ export default function DeskIPod({ settings, avoid, ipod }) {
   const el = useRef(null)
   const shown = useRef(false)
 
-  // settle in once the opening curtain has parted (like Framer's appear effect: scale .8 -> 1).
+  // settle in once the loader has revealed the page (like Framer's appear effect: scale .8 -> 1).
   // Played with the Web Animations API: the device restyles the stage every frame, which keeps
-  // restarting CSS animations inside it.
+  // restarting CSS animations inside it. Hidden until then.
+  const [revealed, setRevealed] = useState(isSiteReady)
+  useEffect(() => onSiteReady(() => setRevealed(true)), [])
   useEffect(() => {
-    if (!spot || shown.current || !el.current) return
+    if (!spot || !revealed || shown.current || !el.current) return
     shown.current = true
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !el.current.animate) return
     el.current.animate([{ opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1 }], {
       duration: 450,
-      delay: 1500,
+      delay: 750,
       easing: 'cubic-bezier(.34, 1.3, .64, 1)',
       fill: 'backwards',
     })
-  }, [spot])
+  }, [spot, revealed])
 
   useEffect(() => {
     const el = box.current
@@ -136,7 +139,7 @@ export default function DeskIPod({ settings, avoid, ipod }) {
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
-          style={{ left: spot.x, top: spot.y, width: IPOD.w * spot.k, height: IPOD.h * spot.k }}
+          style={{ left: spot.x, top: spot.y, width: IPOD.w * spot.k, height: IPOD.h * spot.k, opacity: revealed ? undefined : 0 }}
         >
           <div style={{ width: IPOD.w, height: IPOD.h, transform: spot.k === 1 ? undefined : `scale(${spot.k})`, transformOrigin: '0 0' }}>
             <IPodPlayer {...ipod} />

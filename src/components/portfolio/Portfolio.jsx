@@ -28,7 +28,7 @@ function Placeholder({ id, label, n }) {
   )
 }
 
-/* The floating pill on top of the open screen (Foldfolio's `nav` slot). */
+/* The floating pill on top of the open screen (FoldPhone's `nav` slot). */
 export function PortfolioNav() {
   const { active } = usePortfolio()
   return (

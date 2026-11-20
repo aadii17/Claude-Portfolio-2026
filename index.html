@@ -5,6 +5,16 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fold phone | Aadarsh Choudhari</title>
+    <!-- first paint, before the app's loader mounts: the loader's sheet (the green mat and its grid, see .site-loader) -->
+    <style>
+      html {
+        background-color: #2f6e50;
+        background-image: linear-gradient(rgba(255,255,255,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.16) 1px, transparent 1px),
+          linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+        background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+        background-position: 0 44px;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

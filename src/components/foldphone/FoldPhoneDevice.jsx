@@ -1,7 +1,7 @@
-// Foldfolio Device: the foldable phone that holds the whole site. Started as the Foldfolio
+// FoldPhone Device: the foldable phone that holds the whole site. Started as the FoldPhone
 // Framer template's component; changes for this site are marked [Z8] (Galaxy Z Fold 8 / Z Flip 8
 // shapes, cameras, real 3D thickness, pointer tilt). Trimmed to what this site uses: no Framer
-// editor, the Basic background only, fold mode only. Configure it through Foldfolio.jsx.
+// editor, the Basic background only, fold mode only. Configure it through FoldPhone.jsx.
 //
 // How it works
 // - Scroll opens the device, scrolls the Screen content, folds it shut and shows the Call
@@ -66,8 +66,8 @@ const PAGE_CSS = `
 // [Z8] intro decision for this page load (see the opening-animation effect)
 let ffLoad = null
 
-const STORE_KEY = "foldfolio:style"
-const STORE_EVENT = "foldfolio:style"
+const STORE_KEY = "foldphone:style"
+const STORE_EVENT = "foldphone:style"
 
 // ---------------------------------------------------------------- helpers
 
@@ -154,7 +154,7 @@ export function deviceFrame(vp, layout, switcher) {
 
 const easeOut = (p) => 1 - Math.pow(1 - p, 3)
 
-export default function FoldfolioDevice(props) {
+export default function FoldPhoneDevice(props) {
     const { finish: finishProp, screenColor, switcher, layout, motion, intro } = props
 
     // ---------- viewport + orientation
@@ -1018,6 +1018,7 @@ export default function FoldfolioDevice(props) {
         // opening animation: only on the first page of a visit, at the top, in a visible tab
         if (ffLoad.intro === null) {
             const run =
+                !intro.off && // the site's own loader reveals the page instead
                 !seen &&
                 document.visibilityState === "visible" &&
                 window.scrollY < 40 &&

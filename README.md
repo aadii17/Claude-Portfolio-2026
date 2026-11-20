@@ -20,9 +20,9 @@ npm run build    # production build in dist/
 
 | File | What it is |
 | --- | --- |
-| `src/components/foldfolio/FoldfolioDevice.jsx` | The folding-phone component (started from the Foldfolio Framer template, trimmed to what this site uses). Edits are marked `[Z8]`. |
-| `src/components/foldfolio/Foldfolio.jsx` | The phone's settings and their defaults; merges the overrides you pass. |
-| `src/components/foldfolio/FoldfolioHero.jsx` | Mounts the phone and fills its slots (screens, cover, nav, backdrop). |
+| `src/components/foldphone/FoldPhoneDevice.jsx` | The folding-phone component (started from a folding-phone Framer template, trimmed to what this site uses). Edits are marked `[Z8]`. |
+| `src/components/foldphone/FoldPhone.jsx` | The phone's settings and their defaults; merges the overrides you pass. |
+| `src/components/foldphone/FoldPhoneHero.jsx` | Mounts the phone and fills its slots (screens, cover, nav, backdrop). |
 | `src/components/portfolio/` | The portfolio shown on the inner display (`content.js` holds all the text). |
 | `src/components/site/` | Lock screen, desk-mat background, India-time clock, name and links (`site.js`). |
 

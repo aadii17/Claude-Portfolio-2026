@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from 'react'
  * - ruler ticks along all four edges, numbered every major line, like a mat's measured border
  * - 30° / 45° / 60° angle guides from the bottom-left corner and a small registration mark
  * A green self-healing cutting mat with light printed lines, so the phone stays the focus.
- * Rendered in Foldfolio's `backdrop` slot; it fills the stage and redraws its ruler on resize. */
+ * Rendered in FoldPhone's `backdrop` slot; it fills the stage and redraws its ruler on resize. */
 
-export const MAT = '#2f6e50' // the mat's green (also used for the intro curtain, see FoldfolioHero.jsx)
+export const MAT = '#2f6e50' // the mat's green (also used for the intro curtain, see FoldPhoneHero.jsx)
 const INK = '255,255,255' // the printed lines, as r,g,b
 const UNIT = 16 // one grid square, px
 const MAJOR = 5 // a major line every 5 squares (80px), numbered on the rulers

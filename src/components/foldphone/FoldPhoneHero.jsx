@@ -5,10 +5,11 @@ import { SITE } from '../site/site'
 import Portfolio, { PortfolioNav } from '../portfolio/Portfolio'
 import DeskIPod from '../desk/DeskIPod'
 import NekoCat from '../desk/NekoCat'
-import Foldfolio, { withDefaults } from './Foldfolio'
-import { deviceFrame } from './FoldfolioDevice'
+import SiteLoader from '../site/SiteLoader'
+import FoldPhone, { withDefaults } from './FoldPhone'
+import { deviceFrame } from './FoldPhoneDevice'
 
-/* The Foldfolio device. The open screen holds the single-page portfolio (src/components/portfolio/).
+/* The FoldPhone device. The open screen holds the single-page portfolio (src/components/portfolio/).
  *
  * Devices: wide screens show a Galaxy Z Fold 8 (book fold), phones/tall screens a Galaxy Z Flip 8 (flip fold).
  *
@@ -16,12 +17,12 @@ import { deviceFrame } from './FoldfolioDevice'
  *   screen          Z Fold 8 inner display: Portfolio (fold). 976px wide; 916px visible, taller = it scrolls inside.
  *                   A faint under-display camera sits top-centre of the right half.
  *   screenPortrait  Z Flip 8 inner display: Portfolio (flip). 358px wide; 823px visible. Punch-hole at top centre.
- *   cover           Z Fold 8 cover screen (closed): LockScreen, Foldfolio's own lock-screen design. Punch-hole at top centre.
+ *   cover           Z Fold 8 cover screen (closed): LockScreen, FoldPhone's own lock-screen design. Punch-hole at top centre.
  *   coverPortrait   Z Flip 8 FlexWindow (closed): LockScreen, compact variant.
  *   call            screen shown on the cover after it folds shut again at the end.
  *   nav             floating nav on top of the open display: PortfolioNav (scrolls the screen to a section).
  *   backdrop        the layer behind the phone: the precision-grid desk mat (DeskmatGrid) with the
- *                   iPod lying on it (DeskIPod, src/components/desk/).
+ *                   iPod lying on it (DeskIPod, src/components/desk/; wider screens only, not on mobile).
  *
  * On top of everything: the pixel cat and its "You like cats?" switch (NekoCat), bottom-left
  * (bottom-right on small screens, where the finish switcher takes the left corner). The cat walks
@@ -67,7 +68,6 @@ const IPOD = {
 // the cat's corner (the switch, and the cat's home right beside it), kept free of the iPod
 const CAT_ZONE = 280
 const avoidCatLeft = ({ h }) => [{ x: 0, y: h - 120, w: CAT_ZONE, h: 120 }]
-const avoidCatRight = ({ w, h }) => [{ x: w - CAT_ZONE, y: h - 120, w: CAT_ZONE, h: 120 }]
 
 // what the cat walks around: the phone (its whole unfolded area, as the iPod keeps clear of)
 // and wherever the iPod is lying right now
@@ -88,7 +88,7 @@ const OBSTACLES = { phone: catObstacles(SETTINGS.phone), wide: catObstacles(SETT
 // the cat's home sits on the switch's row, just inside of it (switch: 16px from the corner, ~175 wide)
 const CAT_HOME_X = 16 + 176 + 10
 
-export default function FoldfolioHero() {
+export default function FoldPhoneHero() {
   const phone = useMedia('(max-width: 809.98px)')
   const compact = useMedia('(max-width: 559.98px)') // the device moves its finish switcher to the left here
   const settings = phone ? SETTINGS.phone : SETTINGS.wide
@@ -98,9 +98,10 @@ export default function FoldfolioHero() {
   // the template's curtain intro.
   return (
     <>
-      <Foldfolio
+      <SiteLoader />
+      <FoldPhone
         {...settings}
-        intro={{ color: MAT, line: 'rgba(255,255,255,.6)' }} // the opening curtain matches the green mat
+        intro={{ color: MAT, line: 'rgba(255,255,255,.6)', off: true }} // SiteLoader reveals the page instead of the curtain
         screen={<Portfolio variant="fold" />}
         screenPortrait={<Portfolio variant="flip" />}
         cover={<LockScreen size="fold" />}
@@ -110,7 +111,7 @@ export default function FoldfolioHero() {
         backdrop={
           <>
             <DeskmatGrid />
-            <DeskIPod settings={settings} avoid={compact ? avoidCatRight : avoidCatLeft} ipod={IPOD} />
+            {!phone && <DeskIPod settings={settings} avoid={avoidCatLeft} ipod={IPOD} /> /* no iPod on mobile */}
           </>
         }
       />

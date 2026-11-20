@@ -1,6 +1,6 @@
-import FoldfolioDevice from './FoldfolioDevice'
+import FoldPhoneDevice from './FoldPhoneDevice'
 
-/* The phone's settings and their defaults (the values the Foldfolio template ships with).
+/* The phone's settings and their defaults (the values the FoldPhone template ships with).
  * Pass only what you want to change; nested settings merge, e.g. layout={{ top: 32 }} keeps the
  * other layout defaults. Slots (screen, cover, nav, …) are passed straight through. */
 const DEFAULTS = {
@@ -25,6 +25,6 @@ export function withDefaults(props) {
   return merged
 }
 
-export default function Foldfolio(props) {
-  return <FoldfolioDevice {...withDefaults(props)} />
+export default function FoldPhone(props) {
+  return <FoldPhoneDevice {...withDefaults(props)} />
 }

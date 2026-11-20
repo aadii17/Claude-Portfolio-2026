@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 
-/* Shared UI state for the open screen. Foldfolio renders the screen once per half (two copies
+/* Shared UI state for the open screen. FoldPhone renders the screen once per half (two copies
  * of the same page), so anything interactive must live outside the components: both copies read
  * the same store. */
 
@@ -26,7 +26,7 @@ export function usePortfolio() {
 }
 
 /* Scroll the phone so a section fills its screen. In-screen links can't use #anchors
- * (the screen's content scrolls with the page), so this asks Foldfolio via its `ff:scrollto` hook. */
+ * (the screen's content scrolls with the page), so this asks FoldPhone via its `ff:scrollto` hook. */
 export function goTo(id) {
   const roots = [...document.querySelectorAll('.pf')].filter((r) => r.offsetWidth > 0)
   const root = roots[roots.length - 1]

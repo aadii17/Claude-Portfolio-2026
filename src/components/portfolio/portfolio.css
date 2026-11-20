@@ -32,7 +32,7 @@
 .pf-flip .pf-ph-title { font-size: 40px; }
 .pf-ph-note { font-size: 14px; color: var(--muted); }
 
-/* ---------- floating nav pill (Foldfolio's nav slot, on top of the open screen) ---------- */
+/* ---------- floating nav pill (FoldPhone's nav slot, on top of the open screen) ---------- */
 .pf-nav {
   display: flex; gap: 2px; padding: 4px; border-radius: 999px;
   background: rgb(255 255 255 / .9); box-shadow: 0 10px 30px -12px rgb(23 23 26 / .3), inset 0 0 0 1px rgb(23 23 26 / .06);

@@ -1,8 +1,8 @@
 import { useIndiaTime } from './indiaTime'
 import { NOTICES, SITE } from './site'
 
-/* The closed phone's cover screen, rebuilt from Foldfolio's own lock screen ("Slot · Cover" and
- * "Slot · Cover Phone" in the Foldfolio template): photo wallpaper (public/wallpaper.jpg, set in
+/* The closed phone's cover screen, rebuilt from FoldPhone's own lock screen ("Slot · Cover" and
+ * "Slot · Cover Phone" in the FoldPhone template): photo wallpaper (public/wallpaper.jpg, set in
  * index.css), big condensed clock, one line under it, frosted notifications, round buttons +
  * "Scroll to unfold". Sizes are the template's; the clock is live India time. */
 
